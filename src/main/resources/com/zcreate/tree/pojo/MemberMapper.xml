@@ -4,7 +4,7 @@
 <mapper namespace="com.zcreate.tree.dao.MemberMapper">
     <cache eviction="LRU" readOnly="true" flushInterval="86400000" size="10000"/>
     <resultMap id="UserResult" type="com.zcreate.tree.pojo.Member">
-        <result column="member_id" jdbcType="INTEGER" property="memberId"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="member_no" jdbcType="VARCHAR" property="memberNo"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
@@ -14,10 +14,11 @@
         <result column="cur_level" jdbcType="INTEGER" property="curLevel"/>
         <result column="child_total" jdbcType="INTEGER" property="childTotal"/>
         <result column="child_depth" jdbcType="INTEGER" property="childDepth"/>
-        <result column="direct_count" jdbcType="INTEGER" property="directCount"/> 
+        <result column="direct_count" jdbcType="INTEGER" property="directCount"/>
     </resultMap>
     <sql id="queryWhere">
         <where>
+            <if test="param.memberId!=null">AND member_id = #{param.memberId:BIGINT}</if>
             <if test="param.memberNo!=null">AND member_no = #{param.memberNo:INTEGER}</if>
             <if test="param.realName!=null">AND real_name = #{param.realName:VARCHAR}</if>
             <if test="param.phone!=null">AND phone = #{param.phone:VARCHAR}</if>
@@ -31,9 +32,7 @@
         <include refid="queryWhere"/>
     </select>
     <select id="selectMember" resultMap="UserResult" parameterType="java.util.Map" useCache="true">
-        SELECT
-        member_id, member_no, real_name, id_card, phone, member_info, parent_no, cur_level, child_total, child_depth,
-        direct_count
+        SELECT member_id, member_no, real_name, id_card, phone, member_info, parent_no, cur_level, child_total, child_depth, direct_count
         FROM member
         <include refid="queryWhere"/>
         <choose>
@@ -61,8 +60,111 @@
             </choose>
             <if test="param.reasonCode!=null">AND reasoncode = #{param.reasonCode:INTEGER}</if>
         </where>
-    </sql> 
+    </sql>
     <select id="selectParent" resultType="java.util.Map" parameterType="java.util.Map" statementType="CALLABLE">
         call findParent(#{param.memberNo,jdbcType=VARCHAR,mode=IN}, #{param.maxlevel,jdbcType=INTEGER,mode=IN})
+    </select>
+    <!--充值记录-->
+    <select id="getDepositCount" resultType="int" parameterType="java.util.Map" useCache="true">
+        SELECT count(*)
+        FROM rechargeOrder
+        where userId = #{param.user_id:BIGINT}
+    </select>
+    <select id="selectDeposit" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
+        SELECT
+        a.userID,
+        b.inviteCode as "云科号",
+        b.userName AS "用户名",
+        ifnull(c.realName,"null") as "姓名",
+        ifnull(b.mobile,"null") as "手机号码",
+        ifnull(c.idCardNo,"null") as "身份证号码",
+        a.amount as "交易金额",
+        a.createTime as "订单时间",
+        CASE a.payType WHEN 1 THEN "支付宝" WHEN 2 THEN "微信" WHEN 3 THEN "先锋快捷支付" WHEN 4 THEN "国美支付" WHEN 10 THEN "支付宝扫码" WHEN 11 THEN "微信扫码" ELSE a.payType END as "支付类型",
+        ifnull(a.resMessage,"null") as "resMessage",
+        ifnull(a.bankcard,"null") as "bankcard",
+        CASE a.status WHEN 1 THEN "未支付" WHEN 2 THEN "支付成功" WHEN 3 THEN "支付失败" end as "支付状态"
+        FROM rechargeOrder a
+        LEFT JOIN `user` b ON a.userid = b.userid
+        LEFT JOIN bankcardmanagement c ON a.userid = c.userid
+        where a.userId = #{param.user_id:BIGINT}
+        <choose>
+            <when test="param.start>0 and param.length >0">
+                limit #{param.start:INTEGER},#{param.length:INTEGER}
+            </when>
+            <when test="param.length >0">
+                limit #{param.length:INTEGER}
+            </when>
+        </choose>
+    </select>
+    <!--线下转账记录-->
+    <select id="getOfflineCount" resultType="int" parameterType="java.util.Map" useCache="true">
+        SELECT count(*)
+        FROM linetransfer
+        where userid = #{param.user_id:BIGINT}
+    </select>
+    <select id="selectOffline" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
+        SELECT a.linetransferid AS "转账流水号",
+        CASE a.type WHEN 1 THEN "本人转账" WHEN 2 THEN "他人转账" END AS "转账类型",
+        a.userid,
+        b.invitecode AS "云科号",
+        b.username AS "用户名",
+        ifnull( a.realname, "null" ) AS "真实姓名",
+        ifnull( CASE c.idCardNo WHEN '' THEN c.otheridcardno ELSE c.idCardNo END, "null" ) AS "身份证号",
+        ifnull( CASE WHEN b.companyid IS NULL THEN b.mobile ELSE d.mobile END, "null" ) AS "手机号码",
+        ifnull( a.bankname, "null" ) AS "银行名称",
+        a.amount AS "金额",
+        a.remark,
+        CASE a.`STATUS` WHEN 1 THEN "待审核" WHEN 2 THEN "拒绝" WHEN 3 THEN "审核通过" WHEN 4 THEN "审核通过" END AS "审核状态",
+        ifnull(a.optime, "null" ) AS "审核时间",
+        ifnull( a.opreason, "null" ) AS "拒绝原因",
+        a.createtime AS "创建时间"
+        FROM linetransfer a
+        LEFT JOIN `user` b ON a.userid = b.userid
+        LEFT JOIN bankcardmanagement c ON a.userid = c.userid
+        LEFT JOIN company d ON b.companyid = d.companyid
+        LEFT JOIN region r ON a.regionid = r.regionid
+        where a.userid=#{param.user_id:BIGINT}
+        ORDER BY a.createtime DESC
+        <choose>
+            <when test="param.start>0 and param.length >0">
+                limit #{param.start:INTEGER},#{param.length:INTEGER}
+            </when>
+            <when test="param.length >0">
+                limit #{param.length:INTEGER}
+            </when>
+        </choose>
+    </select>
+
+    <!--提现记录-->
+    <select id="getWithdrawCount" resultType="int" parameterType="java.util.Map" useCache="true">
+        SELECT count(*)
+        FROM moneywithdraw
+        where userid = #{param.user_id:BIGINT}
+    </select>
+    <select id="selectWithdraw" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
+        SELECT
+        i.id AS "提现流水号",
+        i.userid,
+        i.amount AS "出款金额",
+        i.witamount AS "提现金额",
+        i.pouamount AS "提现手续",
+        i.bankinfo AS "银行卡信息",
+        i.acctno AS "出款账户",
+        i.acctname AS "账户名称",
+        CASE i.`status` WHEN 1 THEN "未处理" WHEN 2 THEN "已处理" WHEN 3 THEN "被拒绝" END AS "提现状态",
+        ifnull( i.remark, "null" ) AS "拒绝原因",
+        i.createtime AS "提现时间"
+        FROM moneywithdraw i
+        where i.userid=#{param.user_id:BIGINT}
+        ORDER BY i.createtime DESC
+        <choose>
+            <when test="param.start>0 and param.length >0">
+                limit #{param.start:INTEGER},#{param.length:INTEGER}
+            </when>
+            <when test="param.length >0">
+                limit #{param.length:INTEGER}
+            </when>
+        </choose>
     </select>
 </mapper>

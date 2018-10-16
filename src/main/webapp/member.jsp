@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>三得传销查询系统</title>
+    <title>云科传销查询系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -58,6 +58,10 @@
                         {"data": "realName", "sClass": "center"},
                         {"data": "idCard", "sClass": "center"},
                         {"data": "phone", "sClass": "center"},
+                        {"data": "userLevel", "sClass": "center"},
+                        {"data": "withdraw", "sClass": "center"},
+                        {"data": "withdraw", "sClass": "center"},
+                        {"data": "withdraw", "sClass": "center"},
                         {"data": "parentNo", "sClass": "center"},
                         {"data": "curLevel", "sClass": "center"},
                         {"data": "childTotal", "sClass": "center"},
@@ -67,31 +71,40 @@
                     ],
 
                     'columnDefs': [
-                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 0},
+                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 0, width: 20},
                         {
-                            "orderable": false, className: 'text-center', "targets": 1, render: function (data, type, row, meta) {
+                            "orderable": false, className: 'text-center', "targets": 1, title: '用户ID', render: function (data, type, row, meta) {
                                 return '<a href="#"  name="memberNo">{0}</a>'.format(data);
                             }
                         },
-                        {"orderable": false, className: 'text-center', "targets": 2},
-                        {"orderable": false, className: 'text-center', "targets": 3},
-                        {"orderable": false, className: 'text-center', "targets": 4},
+                        {"orderable": false, className: 'text-center', "targets": 2, title: '姓名'},
+                        {"orderable": false, className: 'text-center', "targets": 3, title: '证件号'},
+                        {"orderable": false, className: 'text-center', "targets": 4, title: '手机号'},
+                        {"orderable": false, className: 'text-center', "targets": 5, title: '用户类型'},
+                        {"orderable": false, className: 'text-center', "targets": 6, title: '提现金额',
+                            render: function (data, type, row, meta) {
+                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberWithdraw.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
+                            }},
+                        {"orderable": false, className: 'text-center', "targets": 7, title: '充值记录'},
+                        {"orderable": false, className: 'text-center', "targets": 8, title: '转账记录'},
+
                         {
-                            "orderable": false, "searchable": false, className: 'text-center', "targets": 5,
+                            "orderable": false, "searchable": false, className: 'text-center', "targets": 9, title: '上级ID',
                             render: function (data, type, row, meta) {
                                 return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(data, data);
                             }
                         },
-                        {"orderable": false, 'targets': 6, 'searchable': false},
-                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 7},
-                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 8},
+                        {"orderable": false, 'targets': 7, title: '当前层级', 'searchable': false},
+                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 10, title: '下级总数'},
+                        {"orderable": false, "searchable": false, className: 'text-center', "targets": 11, title: '最深级数'},
                         {
-                            "orderable": false, 'searchable': false, 'targets': 9,
+                            "orderable": false, 'searchable': false, 'targets': 12, title: '直接下级数',
                             render: function (data, type, row, meta) {
                                 return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(row["memberNo"], data);
                             }
-                        }, {
-                            "orderable": false, 'searchable': false, 'targets': 10,
+                        }, 
+                        {
+                            "orderable": false, 'searchable': false, 'targets': 13, title: '查看上级',
                             render: function (data, type, row, meta) {
                                 return '<div class="hidden-sm hidden-xs action-buttons">' +
                                     '<a class="green" href="#" data-memberNo="{0}" data-realName="{1}">'.format(data, row["realName"]) +
@@ -126,8 +139,16 @@
                     cell.innerHTML = i + 1;
                 });
             });
+            myTable.on('xhr', function (e, settings, json, xhr) {
+                if (json.data.length > 0)
+                    for (var i = 0; i < json.data.length; i++) {
+                        var memberInfo = JSON.parse(json.data[i].memberInfo);
+                        json.data[i].userLevel = memberInfo['基本信息']['等级'];
+                        json.data[i].withdraw = memberInfo['资金']['充值金额'];
+                    }
+            });
             myTable.on('draw', function () {
-                let url;
+                var url;
                 $('#dynamic-table tr').find('a:eq(0)').click(function () {
                     url = "/memberInfo.jspx?memberNo={0}".format($(this).text());
                     window.open(url, "_blank");
@@ -142,8 +163,10 @@
                     $('.form-search')[0].reset();
                     $('input[name="parentNo"]').val($(this).attr("data-parentNo"));
                     myTable.ajax.url(encodeURI(url)).load();
-                        $('#resultName').text($(this).attr("data-parentNo") + "的直接下级");
-
+                    $('#resultName').text($(this).attr("data-parentNo") + "的直接下级");
+                });
+                $('#dynamic-table tr').find('.hasDetail').click(function () {
+                    window.open($(this).attr("data-Url"), "_blank");
                 });
             });
             $('.btn-success').click(function () {
@@ -278,21 +301,6 @@
                                 <!-- div.dataTables_borderWrap -->
                                 <div>
                                     <table id="dynamic-table" class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>用户ID</th>
-                                            <th>姓名</th>
-                                            <th>证件号</th>
-                                            <th>手机号</th>
-                                            <th>上级ID</th>
-                                            <th>当前层级</th>
-                                            <th>下级总数</th>
-                                            <th>最深级数</th>
-                                            <th>直接下级数</th>
-                                            <th>查看上级</th>
-                                        </tr>
-                                        </thead>
                                     </table>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ package com.zcreate.tree.pojo;
 import java.io.Serializable;
 
 public class Member implements Serializable {
-    private Integer memberId;
+    private Long memberId;
     private String memberNo;
     private String userName;
     private String realName;
@@ -16,11 +16,11 @@ public class Member implements Serializable {
     private Integer childDepth;
     private Integer directCount;
 
-    public Integer getMemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(Integer memberId) {
+    public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
 

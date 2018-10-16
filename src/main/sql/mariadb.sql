@@ -6,7 +6,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS member;
 
 CREATE TABLE member (
-  member_id    int           auto_increment,
+  member_id    bigint           ,
   member_no    varchar(20) NOT NULL,
   user_name    varchar(100),-- 用户名
   real_name    varchar(100),
