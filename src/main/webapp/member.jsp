@@ -54,7 +54,7 @@
                     bAutoWidth: false,
                     "columns": [
                         {"data": "memberId", "sClass": "center", type: "num"},
-                        /* {"data": "memberNo", "sClass": "center"},*/
+                        {"data": "memberNo", "sClass": "center"},
                         {"data": "userName", "sClass": "center"},
                         {"data": "realName", "sClass": "center"},
                         {"data": "idCard", "sClass": "center"},
@@ -62,8 +62,7 @@
                         {"data": "userLevel", "sClass": "center"},
                         {"data": "yunkePoint", "sClass": "center"},
                         {"data": "withdraw", "sClass": "center"},
-                        {"data": "withdraw", "sClass": "center"},
-                        {"data": "withdraw", "sClass": "center"},
+                        {"data": "deposit", "sClass": "center"},
                         {"data": "parentName", "sClass": "center"},
                         {"data": "curLevel", "sClass": "center"},
                         {"data": "childTotal", "sClass": "center"},
@@ -78,34 +77,33 @@
                                 return meta.row + 1 + meta.settings._iDisplayStart;
                             }
                         },
-                        /* {
-                             "orderable": false, "targets": 1, title: '云科号', render: function (data, type, row, meta) {
-                                 return '<a href="#"  name="memberNo">{0}</a>'.format(data);
-                             }
-                         },*/
                         {
-                            "orderable": false, "targets": 1, title: '用户名', render: function (data, type, row, meta) {
+                            "orderable": false, "targets": 1, title: '云科号', render: function (data, type, row, meta) {
                                 return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberId={0}">{1}</a>'.format(row["memberId"], data);
                             }
                         },
-                        {"orderable": false, "targets": 2, title: '姓名'},
-                        {"orderable": false, "targets": 3, title: '证件号'},
-                        {"orderable": false, "targets": 4, title: '手机号'},
-                        {"orderable": false, "targets": 5, title: '用户类型'},
-                        {"orderable": false, "targets": 6, title: '云科盾'},
                         {
-                            "orderable": false, "targets": 7, title: '提现金额',
+                            "orderable": false, "targets": 2, title: '用户名', render: function (data, type, row, meta) {
+                                return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberId={0}">{1}</a>'.format(row["memberId"], data);
+                            }
+                        },
+                        {"orderable": false, "targets": 3, title: '姓名'},
+                        {"orderable": false, "targets": 4, title: '证件号'},
+                        {"orderable": false, "targets": 5, title: '手机号'},
+                        {"orderable": false, "targets": 6, title: '用户类型'},
+                        {"orderable": false, "targets": 7, title: '云科盾'},
+                        {
+                            "orderable": false, "targets": 8, title: '提现金额',
                             render: function (data, type, row, meta) {
                                 return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberWithdraw.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
                             }
                         },
                         {
-                            "orderable": false, "targets": 8, title: '充值记录',
+                            "orderable": false, "targets": 9, title: '充值记录',
                             render: function (data, type, row, meta) {
                                 return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberDeposit.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
                             }
                         },
-                        {"orderable": false, "targets": 9, title: '转账记录'},
 
                         {
                             "orderable": false, "targets": 10, title: '推荐人',
@@ -126,7 +124,7 @@
                             "orderable": false, 'targets': 15, title: '查看上级',
                             render: function (data, type, row, meta) {
                                 return '<div class="hidden-sm hidden-xs action-buttons">' +
-                                    '<a class="green" href="#" data-memberNo="{0}" data-realName="{1}">'.format(data, row["realName"]) +
+                                    '<a class="hasDetail" href="#" data-Url="/memberParent.jsp?memberNo={0}&realName={1}"   >'.format(row["memberNo"], encodeURI(encodeURI(row["realName"]))) +
                                     '<i class="ace-icon glyphicon glyphicon-arrow-up bigger-130"></i>' +
                                     '</a>' +
                                     '</div>';
@@ -159,6 +157,7 @@
                         json.data[i].userLevel = memberInfo['基本信息']['等级'];
                         json.data[i].parentName = memberInfo['基本信息']['推荐人'] === '' ? json.data[i].parentNo : memberInfo['基本信息']['推荐人'];
                         json.data[i].withdraw = memberInfo['资金']['充值金额'];
+                        json.data[i].deposit = memberInfo['资金']['充值金额'];
                         json.data[i].yunkePoint = memberInfo['资金']['云科盾'];
                     }
             });
@@ -169,10 +168,6 @@
                      window.open(url, "_blank");
                  });*/
 
-                $('#dynamic-table tr').find('a:eq(3)').click(function () {
-                    url = "/memberParent.jsp?memberNo={0}&realName={1}".format($(this).attr("data-memberNo"), $(this).attr("data-realName"));
-                    window.open(encodeURI(encodeURI(url)), "_blank");
-                });
                 $('#dynamic-table tr').find('.research').click(function () {
                     url = "/listMember.jspx?{0}={1}".format($(this).attr("name"), $(this).attr("data-parentNo"));
                     $('.form-search')[0].reset();

@@ -81,7 +81,7 @@ public class MemberController {
         //List<Map<String, Object>> oj = new List<HashMap<>>();
         for (Member member : members) {
             Map<String, Object> item = new HashMap<>();
-            String baseText = "层级:" + member.getCurLevel() + "，" + ("".equals(member.getRealName()) ? member.getMemberNo() : member.getRealName()) + "，手机：" + member.getPhone();
+            String baseText = "层级:" + member.getCurLevel() + "，：" + ("".equals(member.getRealName()) ? "用户名：" + member.getUserName() : "姓名：" + member.getRealName()) + "，手机：" + member.getPhone();
             if (member.getDirectCount() > 0) {
                 baseText += "，下级深度：" + member.getChildDepth() + "，下级总数：" + member.getChildTotal();
                 item.put("type", "folder");

@@ -63,12 +63,15 @@
                     bAutoWidth: false,
                     "columns": [
                         {"data": "rechargeId", "sClass": "center"},
-                        {"data": "操作时间", "sClass": "center"},
-                        {"data": "bankcard", "sClass": "center"},
+                        {"data": "createtime", "sClass": "center"},
+                        {"data": "bankinfo", "sClass": "center"},
+                        {"data": "真实姓名", "sClass": "center"},
                         {"data": "支付类型", "sClass": "center"},
-                        {"data": "交易金额", "sClass": "center"},
-                        {"data": "resMessage", "sClass": "center"},
-                        {"data": "支付状态", "sClass": "center"}
+                        {"data": "remark", "sClass": "center"},
+                        {"data": "金额", "sClass": "center"},
+                        {"data": "状态", "sClass": "center"},
+                        {"data": "审核时间", "sClass": "center"},
+                        {"data": "返回消息", "sClass": "center"}
                     ],
 
                     'columnDefs': [
@@ -78,11 +81,14 @@
                             }
                         },
                         {"orderable": true, 'targets': 1, title: '操作时间', width: 160},
-                        {"orderable": false, "targets": 2, title: '银行卡号'},
-                        {"orderable": false, "targets": 3, title: '支付类型'},
-                        {"orderable": false, "targets": 4, title: '交易金额'},
-                        {"orderable": false, "targets": 5, title: '交易消息'},
-                        {"orderable": true, "targets": 6, title: '支付状态'}
+                        {"orderable": false, "targets": 2, title: '信息信息'},
+                        {"orderable": false, "targets": 3, title: '真实姓名'},
+                        {"orderable": false, "targets": 4, title: '支付类型'},
+                        {"orderable": false, "targets": 5, title: '备注'},
+                        {"orderable": false, "targets": 6, title: '金额'},
+                        {"orderable": true, "targets": 7, title: '状态'},
+                        {"orderable": true, "targets": 8, title: '审核时间'},
+                        {"orderable": false, "targets": 9, title: '交易消息'}
                     ],
                     "aLengthMenu": [[20, 100, 1000, -1], ["20", "100", "1000", "全部"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
@@ -93,13 +99,18 @@
                     "ajax": url,
                     "processing": true,
                     "footerCallback": function (tfoot, data, start, end, display) {
-                        var total = 0.0;
+                        var total1 = 0.0;
+                        var total2 = 0.0;
                         $.each(data, function (index, value) {
-                            if (value["支付状态"] === '支付成功')
-                                total += value["交易金额"];
+                            if (value["状态"] === '支付成功')
+                                total1 += value["金额"];
+                            if (value["状态"] === '审核通过')
+                                total2 += value["金额"];
                         });
                         // Update footer
-                        $(tfoot).find('th').eq(0).html('支付成功 交易金额合计： ' + accounting.formatMoney(total, '￥'));
+                        $(tfoot).find('th').eq(0).html('在线支付 成功金额合计： ' + accounting.formatMoney(total1, '￥') +
+                            '&nbsp;&nbsp;&nbsp;线下转账 成功金额合计： ' + accounting.formatMoney(total2, '￥') +
+                            '&nbsp;&nbsp;&nbsp;&nbsp;总计： ' + accounting.formatMoney(total1 + total2, '￥'));
                     },
                     select: {style: 'single'}
                 });

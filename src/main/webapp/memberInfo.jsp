@@ -81,6 +81,7 @@
                 '<div class="profile-info-name">{2}</div>' +
                 '<div class="profile-info-value">{3}</div>' +
                 '</div>';
+
             var row3 = '<div class="profile-info-row">' +
                 '<div class="profile-info-name">{0}</div>' +
                 '<div class="profile-info-value">{1}</div>' +
@@ -124,8 +125,8 @@
                 var th = "";
                 var td = "";
                 for (var i = 0; i < obj.length; i++) {
-                    let row_td = "";
-                    let row_th = "";
+                    var row_td = "";
+                    var row_th = "";
                     $.each(obj[i], function (key, val) {
                         if (i === 0)
                             row_th += "<th>{0}</th>".format(key);
@@ -161,10 +162,9 @@
                     html = showDivObject("层级信息", baseInfo);
                     $('#baseInfo').html(html);
 
-                    html = showDivObject("基本信息", memberInfo["基本信息"]);
+                    html = showDivObject("注册信息", memberInfo["基本信息"]);
                     html += showDivObject("资金", memberInfo["资金"]);
                     $('#aaa').html(html);
-
                     /*
                     if (memberInfo) {
                         var html = "";
@@ -177,20 +177,23 @@
                     }*/
 
                     /*对含ID的，增加连接*/
-                    $('#baseInfo').find(".profile-info-row").each(function () {
-                        if ($(this).find('.profile-info-name:eq(0)').text().indexOf("ID") > 0) {
-                            var valueElement = $(this).find('.profile-info-value:eq(0)');
+                    /*   $('#baseInfo').find(".profile-info-row").each(function () {
+                           if ($(this).find('.profile-info-name:eq(0)').text().indexOf("ID") > 0) {
+                               var valueElement = $(this).find('.profile-info-value:eq(0)');
 
-                            valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
-                        }
-                        if ($(this).find('.profile-info-name:eq(1)').text().indexOf("ID") > 0) {
-                            valueElement = $(this).find('.profile-info-value:eq(1)');
+                               valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
+                           }
+                           if ($(this).find('.profile-info-name:eq(1)').text().indexOf("ID") > 0) {
+                               valueElement = $(this).find('.profile-info-value:eq(1)');
 
-                            valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
-                        }
-                    });
-                    $(".profile-info-name:contains('姓名')").next().html("<div class='bigger-150' '>" + $(".profile-info-name:contains('姓名')").next().html() + "</div>");
-                    $(".profile-info-name:contains('身份证号码')").next().html("<div class='bigger-130' '>" + $(".profile-info-name:contains('身份证号码')").next().html() + "</div>");
+                               valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
+                           }
+                       });*/
+                    $(".profile-info-name:contains('云科盾')").css("width", "160px");
+                    $(".profile-info-name:contains('充值金额')").css("width", "200px");
+                    $(".profile-info-name:contains('姓名')").next().addClass("bigger-150");
+                    $(".profile-info-name:contains('身份证号码')").next().addClass("bigger-130");
+                    $(".profile-info-name:contains('电话号码')").next().addClass("bigger-150");
                 }
 
             }
@@ -317,9 +320,9 @@
                                         </div>
                                         <!-- /section:pages/profile.info -->
                                         <div id="aaa"></div>
-                                        <div class="widget-main padding-8">
-                                            提示：点击用户ID、上级，可以查看该ID的成员信息。
-                                        </div>
+                                        <%-- <div class="widget-main padding-8">
+                                             提示：点击用户ID、上级，可以查看该ID的成员信息。
+                                         </div>--%>
                                     </div>
                                 </div>
                             </div>

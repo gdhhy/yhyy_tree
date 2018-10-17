@@ -20,7 +20,7 @@ BEGIN
     set @maxlevel = p_maxlevel - 1;
     select parent_no into @parent_no from member where member_no = p_member_no;
 
-    if @maxlevel > 1 and @parent_no >0
+    if v_level>1 and @parent_no >0
     then
       call recurParent(@parent_no, @maxlevel);
     end if;

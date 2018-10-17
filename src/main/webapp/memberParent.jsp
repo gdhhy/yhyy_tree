@@ -72,7 +72,7 @@
                         {"orderable": false, className: 'text-center', "targets": 0, title: '层级'},
                         {"orderable": true, className: 'text-center', "targets": 1, title: '姓名'},
                         {
-                            "orderable": true, className: 'text-center', "targets": 2, title: '用户ID',
+                            "orderable": true, className: 'text-center', "targets": 2, title: '云科号',
                             render: function (data, type, row, meta) {
                                 return '<a  href="#" class="showMemberInfo" >{0}</a>'.format(data);
                             }
@@ -80,7 +80,7 @@
                         {"orderable": true, className: 'text-center', "targets": 3, title: '证件号'},
                         {"orderable": true, className: 'text-center', "targets": 4, title: '电话'},
                         {"orderable": true, className: 'text-center', "targets": 5, title: '推荐人'},
-                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人ID'}
+                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人云科号'}
                     ],
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
                     language: {

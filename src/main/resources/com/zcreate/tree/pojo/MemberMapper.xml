@@ -74,12 +74,34 @@
         where userId = #{param.user_id:BIGINT}
     </select>
     <select id="selectDeposit" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
-        SELECT  a.rechargeId, a.amount as "交易金额", a.createTime as "操作时间",
+        select * from (
+        SELECT
+        a.linetransferid AS "流水号",
+        a.createtime  ,
+        ifnull( a.bankname,  '' ) AS "bankinfo",
+        ifnull( a.realname, '' ) AS "真实姓名",
+        CASE a.type WHEN 1 THEN"本人转账" WHEN 2 THEN"他人转账" END AS "支付类型",
+        a.remark,
+        a.amount AS "金额",
+        CASE a.`STATUS` WHEN 1 THEN"待审核" WHEN 2 THEN"拒绝" WHEN 3 THEN"审核通过" WHEN 4 THEN"审核通过" END AS "状态",
+        ifnull(a.optime, '' ) AS "审核时间",
+        ifnull( a.opreason, '' ) AS "返回消息"
+        FROM
+        linetransfer a where userId= #{param.user_id:BIGINT}
+        union
+        SELECT
+        a.rechargeId "流水号",
+        a.createTime ,
+        ifnull(a.bankcard,'') as "bankinfo",
+        '-' AS "真实姓名",
         CASE a.payType WHEN 1 THEN "支付宝" WHEN 2 THEN "微信" WHEN 3 THEN "先锋快捷支付" WHEN 4 THEN "国美支付" WHEN 10 THEN "支付宝扫码" WHEN 11 THEN "微信扫码" ELSE a.payType END as "支付类型",
-        ifnull(a.resMessage,'') as "resMessage", ifnull(a.bankcard,'') as "bankcard",
-        CASE a.status WHEN 1 THEN "未支付" WHEN 2 THEN "支付成功" WHEN 3 THEN "支付失败" end as "支付状态"
-        FROM rechargeOrder a
-        where a.userId = #{param.user_id:BIGINT}
+        '-' AS remark,
+        a.amount as "金额",
+        CASE a.status WHEN 1 THEN "未支付" WHEN 2 THEN "支付成功" WHEN 3 THEN "支付失败" end as "状态",
+        '-' AS "审核时间",
+        ifnull(a.resMessage,'') as "返回消息"
+        FROM rechargeOrder a  where userId= #{param.user_id:BIGINT}) A
+        order by createTime
         <choose>
             <when test="param.start>0 and param.length >0">
                 limit #{param.start:INTEGER},#{param.length:INTEGER}
