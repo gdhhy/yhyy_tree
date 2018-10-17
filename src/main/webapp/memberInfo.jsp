@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>云科传销查询系统</title>
+    <title><c:out value="${member.realName}"/> - 成员信息 - 道和云科</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -96,7 +96,7 @@
                 '{1}' +
                 '</div>' +
                 '</div>';
-            showMemberInfo(<c:out value="${member.memberNo}"/>);
+
             function showDivObject(propName, obj) {
                 var keyVals = [];
                 var kk = 0;
@@ -139,61 +139,62 @@
                     .format(th, td);
                 return divObject.format(propName, html);
             }
+
             var infoString = '<c:out value="${member.memberInfo}" escapeXml="false"/>';
-            function showMemberInfo(memberNo) {
-                $.getJSON("/listMember.jspx?memberNo=" + memberNo, function (result) { //https://www.cnblogs.com/liuling/archive/2013/02/07/sdafsd.html
-                    if (result.data.length > 0) {
-                        var memberInfo = JSON.parse(result.data[0].memberInfo);
+            showMemberInfo();
+
+            function showMemberInfo() {
+                if (infoString !== '') {
+                    var memberInfo = JSON.parse(infoString);
+                    var html = "";
+                    /* html += row2.format("用户名：", result.data[0].realName, "上级ID：", result.data[0].parentNo);
+                      html += row2.format("用户ID ：", result.data[0].memberNo, "手机号码：", result.data[0].phone);
+
+                      html += row2.format("当前层级：", result.data[0].curLevel, "下级深度：", result.data[0].childDepth);
+                      html += row2.format("全部下级数：", result.data[0].childTotal, " 直接下级数：", result.data[0].directCount);*/
+                    var baseInfo = {
+                        "姓名": '<c:out value="${member.realName}"/>', "身份证号码": '<c:out value="${member.idCard}"/>',
+                        "用户名": '<c:out value="${member.userName}"/>', "电话号码": '<c:out value="${member.phone}"/>',
+                        "当前层级": '<c:out value="${member.curLevel}"/>', "下级深度": '<c:out value="${member.childDepth}"/>',
+                        "全部下级数": '<c:out value="${member.childTotal}"/>', "直接下级数": '<c:out value="${member.directCount}"/>'
+                    };
+                    html = showDivObject("层级信息", baseInfo);
+                    $('#baseInfo').html(html);
+
+                    html = showDivObject("基本信息", memberInfo["基本信息"]);
+                    html += showDivObject("资金", memberInfo["资金"]);
+                    $('#aaa').html(html);
+
+                    /*
+                    if (memberInfo) {
                         var html = "";
-                        html += row2.format("用户名：", result.data[0].realName, "上级ID：", result.data[0].parentNo);
-                        html += row2.format("用户ID ：", result.data[0].memberNo, "手机号码：", result.data[0].phone);
-
-                        html += row2.format("当前层级：", result.data[0].curLevel, "下级深度：", result.data[0].childDepth);
-                        html += row2.format("全部下级数：", result.data[0].childTotal, " 直接下级数：", result.data[0].directCount);
-
-                        $('#baseInfo').html(html);
-
-
-                        if (memberInfo) {
-                            var html = "";
-                            $.each(memberInfo, function (key, val) {
-                                /*console.log(key + "1:" + (val instanceof Array));
-                                console.log(key + "2:" + (val instanceof String));
-                                console.log(key + "2:" + (typeof (val)));
-                                console.log(key + "3:" + (val instanceof Object));
-                                if(key==='提现银行卡') console.log(val);*/
-                                var objType = typeof (val);
-                                if (val instanceof Array) html += showTable(key, val);
-                                /* else if (objType==="string") {
-                                     var obj = JSON.parse(val);
-                                     //console.log("obj typeof:"+typeof(obj));
-                                     html += showDivArray(key, obj);
-                                 }*/
-                                else if (objType === "object") html += showDivObject(key, val);
-                            });
-                            $('#aaa').html(html);
-
-                        }
-
-                        /*对含ID的，增加连接*/
-                        $('#baseInfo').find(".profile-info-row").each(function () {
-                            if ($(this).find('.profile-info-name:eq(0)').text().indexOf("ID") > 0) {
-                                var valueElement = $(this).find('.profile-info-value:eq(0)');
-
-                                valueElement.html("<a href='memberInfo.jspx?memberNo={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
-                            }
-                            if ($(this).find('.profile-info-name:eq(1)').text().indexOf("ID") > 0) {
-                                valueElement = $(this).find('.profile-info-value:eq(1)');
-
-                                valueElement.html("<a href='memberInfo.jspx?memberNo={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
-                            }
+                        $.each(memberInfo, function (key, val) {
+                            var objType = typeof (val);
+                            if (val instanceof Array) html += showTable(key, val);
+                            else if (objType === "object") html += showDivObject(key, val);
                         });
-                        //对现金增加连接
+                        $('#aaa').html(html);
+                    }*/
 
-                    }
-                });
+                    /*对含ID的，增加连接*/
+                    $('#baseInfo').find(".profile-info-row").each(function () {
+                        if ($(this).find('.profile-info-name:eq(0)').text().indexOf("ID") > 0) {
+                            var valueElement = $(this).find('.profile-info-value:eq(0)');
+
+                            valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
+                        }
+                        if ($(this).find('.profile-info-name:eq(1)').text().indexOf("ID") > 0) {
+                            valueElement = $(this).find('.profile-info-value:eq(1)');
+
+                            valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
+                        }
+                    });
+                    $(".profile-info-name:contains('姓名')").next().html("<div class='bigger-150' '>" + $(".profile-info-name:contains('姓名')").next().html() + "</div>");
+                    $(".profile-info-name:contains('身份证号码')").next().html("<div class='bigger-130' '>" + $(".profile-info-name:contains('身份证号码')").next().html() + "</div>");
+                }
 
             }
+
             var remoteDateSource = function (options, callback) {
                 var parent_id = null;
                 if (!('text' in options || 'type' in options)) {
@@ -299,7 +300,7 @@
                             <div class="col-sm-6">
                                 <div class="widget-box widget-color-green2">
                                     <div class="widget-header">
-                                        <h4 class="widget-title      smaller">
+                                        <h4 class="widget-title smaller">
                                             成员详细信息
                                             <span class="smaller-80"></span>
                                         </h4>
@@ -310,13 +311,11 @@
                                     </div>
 
                                     <div class="widget-body">
-                                        <div class="widget-main padding-8">
-                                            <!-- #section:pages/profile.info -->
-                                            <div class="profile-user-info profile-user-info-striped" id="baseInfo">
+                                        <!-- #section:pages/profile.info -->
+                                        <div id="baseInfo">
 
-                                            </div>
-                                            <!-- /section:pages/profile.info -->
                                         </div>
+                                        <!-- /section:pages/profile.info -->
                                         <div id="aaa"></div>
                                         <div class="widget-main padding-8">
                                             提示：点击用户ID、上级，可以查看该ID的成员信息。

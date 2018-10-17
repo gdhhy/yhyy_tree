@@ -34,3 +34,5 @@ alter table member
   add index ix_phone(phone);
 alter table member
   add index ix_parent_id (parent_no);
+alter table member
+  add index ix_user_name (user_name);

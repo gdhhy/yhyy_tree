@@ -2,6 +2,7 @@ package com.zcreate.tree.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.LongSerializationPolicy;
 import com.zcreate.tree.dao.MemberMapper;
 import com.zcreate.tree.pojo.Member;
 import org.slf4j.Logger;
@@ -26,32 +27,34 @@ public class MemberController {
     private static Logger log = LoggerFactory.getLogger(MemberController.class);
     @Autowired
     private MemberMapper memberMapper;
-    private Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
+    private Gson gson = new GsonBuilder().setLongSerializationPolicy(LongSerializationPolicy.STRING).
+            serializeNulls().setDateFormat("yyyy-MM-dd HH:mm").create();
 
     @ResponseBody
     @RequestMapping(value = "/listMember", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String listMember(@RequestParam(value = "memberId", required = false) Long memberId,
+                             @RequestParam(value = "userName", required = false) String userName,
                              @RequestParam(value = "memberNo", required = false) String memberNo,
                              @RequestParam(value = "phone", required = false) String phone,
                              @RequestParam(value = "idCard", required = false) String idCard,
                              @RequestParam(value = "parentNo", required = false) String parentNo,
+                             @RequestParam(value = "parentName", required = false) String parentName,
                              @RequestParam(value = "realName", required = false) String realName,
                              @RequestParam(value = "threeThirty", required = false) Boolean threeThirty,
                              @RequestParam(value = "draw", required = false) Integer draw,
                              @RequestParam(value = "start", required = false) Integer start,
                              @RequestParam(value = "length", required = false, defaultValue = "100") Integer length
     ) {
-      /*  log.debug("searchValue=" + searchValue);
-        log.debug("threeThirty=" + threeThirty);
-        log.debug("memberNo={}", memberNo);*/
         Map<String, Object> param = new HashMap<>();
         param.put("memberId", memberId);
+        param.put("userName", userName);
         param.put("memberNo", memberNo);
         param.put("phone", phone);
         param.put("idCard", idCard);
         param.put("realName", realName);
         param.put("threeThirty", threeThirty);
         param.put("parentNo", parentNo);
+        param.put("parentName", parentName);
         param.put("start", start);
         if (parentNo == null)
             param.put("length", length);
@@ -113,10 +116,16 @@ public class MemberController {
 
 
     @RequestMapping(value = "/memberInfo", method = RequestMethod.GET)
-    public String memberInfo2(@RequestParam(value = "memberNo", required = false) String memberNo, ModelMap model) {
-        log.debug("url = memberInfo");
+    public String memberInfo(@RequestParam(value = "memberNo", required = false) String memberNo,
+                             @RequestParam(value = "memberId", required = false) Long memberId,
+                             @RequestParam(value = "realName", required = false) String realName,
+                             @RequestParam(value = "userName", required = false) String userName,
+                             ModelMap model) {
         Map<String, Object> param = new HashMap<>();
         param.put("memberNo", memberNo);
+        param.put("memberId", memberId);
+        param.put("realName", realName);
+        param.put("userName", userName);
         List<Member> members = memberMapper.selectMember(param);
         if (members.size() >= 1)
             model.addAttribute("member", members.get(0));
