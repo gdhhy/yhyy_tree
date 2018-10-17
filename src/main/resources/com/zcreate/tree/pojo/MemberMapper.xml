@@ -27,7 +27,7 @@
             <if test="@com.zcreate.Ognl@isNotEmpty(param.idCard)">AND id_card = #{param.idCard:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.parentNo)">AND parent_no = #{param.parentNo:INTEGER}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.parentName)">AND member_info->'$."基本信息"."推荐人姓名"'= #{param.parentName:VARCHAR}</if>
-            <if test="param.threeThirty==true">AND child_depth>=2 and direct_count>=30</if>
+            <if test="param.threeThirty==true">AND child_depth>=2 and child_total>=30</if>
         </where>
     </sql>
     <select id="getMemberCount" resultType="int" parameterType="java.util.Map" useCache="true">
@@ -80,7 +80,7 @@
         a.createtime  ,
         ifnull( a.bankname,  '' ) AS "bankinfo",
         ifnull( a.realname, '' ) AS "真实姓名",
-        CASE a.type WHEN 1 THEN"本人转账" WHEN 2 THEN"他人转账" END AS "支付类型",
+        CASE a.type WHEN 1 THEN"本人转账" WHEN 2 THEN"他人转账" else '' END AS "支付类型",
         a.remark,
         a.amount AS "金额",
         CASE a.`STATUS` WHEN 1 THEN"待审核" WHEN 2 THEN"拒绝" WHEN 3 THEN"审核通过" WHEN 4 THEN"审核通过" END AS "状态",

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>云联惠传销查询系统 - 会员记录</title>
+    <title>上级关系 - 道和云科</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -53,7 +53,7 @@
             var realName = decodeURI($.getUrlParam("realName"));
             $('#realName').text(realName);
             var url = "/getParent.jspx?maxlevel=200&memberNo=" + memberNo;
-
+            $(document).attr("title", realName + ' - ' + $(document).attr("title"));//修改title值
             var myTable = $('#dynamic-table')
             //.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
                 .DataTable({
@@ -80,7 +80,10 @@
                         {"orderable": true, className: 'text-center', "targets": 3, title: '证件号'},
                         {"orderable": true, className: 'text-center', "targets": 4, title: '电话'},
                         {"orderable": true, className: 'text-center', "targets": 5, title: '推荐人'},
-                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人云科号'}
+                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人云科号',
+                            render: function (data, type, row, meta) {
+                                return '<a  href="#" class="showMemberInfo" >{0}</a>'.format(data);
+                            }}
                     ],
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
                     language: {
@@ -160,7 +163,7 @@
 
                             <div class="col-xs-12">
                                 <div class="table-header">
-                                    <span id="username"></span> 上级关系
+                                    <span id="realName"></span> 上级关系
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <!-- div.table-responsive -->

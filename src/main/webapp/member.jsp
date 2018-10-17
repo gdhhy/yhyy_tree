@@ -61,8 +61,8 @@
                         {"data": "phone", "sClass": "center"},
                         {"data": "userLevel", "sClass": "center"},
                         {"data": "yunkePoint", "sClass": "center"},
-                        {"data": "withdraw", "sClass": "center"},
                         {"data": "deposit", "sClass": "center"},
+                        {"data": "withdraw", "sClass": "center"},
                         {"data": "parentName", "sClass": "center"},
                         {"data": "curLevel", "sClass": "center"},
                         {"data": "childTotal", "sClass": "center"},
@@ -93,15 +93,15 @@
                         {"orderable": false, "targets": 6, title: '用户类型'},
                         {"orderable": false, "targets": 7, title: '云科盾'},
                         {
-                            "orderable": false, "targets": 8, title: '提现金额',
+                            "orderable": false, "targets": 8, title: '充值记录',
                             render: function (data, type, row, meta) {
-                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberWithdraw.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
+                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberDeposit.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
                             }
                         },
                         {
-                            "orderable": false, "targets": 9, title: '充值记录',
+                            "orderable": false, "targets": 9, title: '提现金额',
                             render: function (data, type, row, meta) {
-                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberDeposit.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
+                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberWithdraw.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
                             }
                         },
 
@@ -114,12 +114,7 @@
                         {"orderable": false, 'targets': 11, title: '当前层级'},
                         {"orderable": false, "targets": 12, title: '下级总数'},
                         {"orderable": false, "targets": 13, title: '最深级数'},
-                        {
-                            "orderable": false, 'targets': 14, title: '直接下级数',
-                            render: function (data, type, row, meta) {
-                                return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(row["memberNo"], data);
-                            }
-                        },
+                        {"orderable": false, 'targets': 14, title: '直接下级数'},
                         {
                             "orderable": false, 'targets': 15, title: '查看上级',
                             render: function (data, type, row, meta) {
@@ -156,8 +151,8 @@
                         var memberInfo = JSON.parse(json.data[i].memberInfo);
                         json.data[i].userLevel = memberInfo['基本信息']['等级'];
                         json.data[i].parentName = memberInfo['基本信息']['推荐人'] === '' ? json.data[i].parentNo : memberInfo['基本信息']['推荐人'];
-                        json.data[i].withdraw = memberInfo['资金']['充值金额'];
                         json.data[i].deposit = memberInfo['资金']['充值金额'];
+                        json.data[i].withdraw = memberInfo['资金']['提现金额'];
                         json.data[i].yunkePoint = memberInfo['资金']['云科盾'];
                     }
             });
@@ -261,8 +256,8 @@
             <div class="breadcrumbs" id="breadcrumbs">
                 <ul class="breadcrumb">
                     <form class="form-search form-inline">
-                        <label>用户名：</label>
-                        <input type="text" name="userName" placeholder="用户名……" class="nav-search-input"
+                        <label>云科号：</label>
+                        <input type="text" name="memberNo" placeholder="云科号……" class="nav-search-input"
                                autocomplete="off"/>
                         姓名：
                         <input type="text" name="realName" placeholder="姓名……" class="nav-search-input"
