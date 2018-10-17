@@ -82,11 +82,7 @@
                                 return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberId={0}">{1}</a>'.format(row["memberId"], data);
                             }
                         },
-                        {
-                            "orderable": false, "targets": 2, title: '用户名', render: function (data, type, row, meta) {
-                                return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberId={0}">{1}</a>'.format(row["memberId"], data);
-                            }
-                        },
+                        {"orderable": false, "targets": 2, title: '用户名'},
                         {"orderable": false, "targets": 3, title: '姓名'},
                         {"orderable": false, "targets": 4, title: '证件号'},
                         {"orderable": false, "targets": 5, title: '手机号'},
@@ -120,7 +116,7 @@
                             render: function (data, type, row, meta) {
                                 return '<div class="hidden-sm hidden-xs action-buttons">' +
                                     '<a class="hasDetail" href="#" data-Url="/memberParent.jsp?memberNo={0}&realName={1}"   >'.format(row["memberNo"], encodeURI(encodeURI(row["realName"]))) +
-                                    '<i class="ace-icon glyphicon glyphicon-arrow-up bigger-130"></i>' +
+                                    '<i class="ace-icon green glyphicon glyphicon-arrow-up bigger-130"></i>' +
                                     '</a>' +
                                     '</div>';
                             }

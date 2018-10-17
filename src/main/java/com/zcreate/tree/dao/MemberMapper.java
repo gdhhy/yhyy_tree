@@ -22,10 +22,6 @@ public interface MemberMapper {
 
     List<Map<String, Object>> selectWithdraw(@Param("param") Map<String, Object> param);
 
-    int getOfflineCount(@Param("param") Map<String, Object> param);
-
-    List<Map<String, Object>> selectOffline(@Param("param") Map<String, Object> param);
-
     int getDepositCount(@Param("param") Map<String, Object> param);
 
     List<Map<String, Object>> selectDeposit(@Param("param") Map<String, Object> param);

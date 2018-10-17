@@ -80,7 +80,7 @@
                         {"orderable": false, 'targets': 0, width: 20, render: function (data, type, row, meta) {
                                 return meta.row + 1 + meta.settings._iDisplayStart;
                             }},
-                        {"orderable": false, 'targets': 1, title: '提现时间', width: 160},
+                        {"orderable": true, 'targets': 1, title: '提现时间', width: 160},
                         {"orderable": false, "targets": 2, title: '提现流水号'},
                         {"orderable": false, "targets": 3, title: '出款金额'},
                         {"orderable": false, "targets": 4, title: '提现金额'},

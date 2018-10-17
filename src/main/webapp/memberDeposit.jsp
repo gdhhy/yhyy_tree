@@ -81,7 +81,7 @@
                             }
                         },
                         {"orderable": true, 'targets': 1, title: '操作时间', width: 160},
-                        {"orderable": false, "targets": 2, title: '信息信息'},
+                        {"orderable": false, "targets": 2, title: '银行信息'},
                         {"orderable": false, "targets": 3, title: '真实姓名'},
                         {"orderable": false, "targets": 4, title: '支付类型'},
                         {"orderable": false, "targets": 5, title: '备注'},
