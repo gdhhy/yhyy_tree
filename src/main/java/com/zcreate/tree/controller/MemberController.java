@@ -151,26 +151,6 @@ public class MemberController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/memberOffline", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String memberOffline(@RequestParam(value = "memberId", required = false) Long memberId,
-                                @RequestParam(value = "draw", required = false) Integer draw,
-                                @RequestParam(value = "start", required = false) Integer start,
-                                @RequestParam(value = "length", required = false, defaultValue = "10000") Integer length) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("user_id", memberId);
-        param.put("start", start);
-        param.put("length", length);
-
-        int recordCount = memberMapper.getOfflineCount(param);
-        Map<String, Object> result = new HashMap<>();
-        result.put("data", memberMapper.selectOffline(param));
-        result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
-        result.put("recordsTotal", recordCount);
-        result.put("recordsFiltered", recordCount);
-        return gson.toJson(result);
-    }
-
-    @ResponseBody
     @RequestMapping(value = "/memberDeposit", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String memberDeposit(@RequestParam(value = "memberId", required = false) Long memberId,
                                 @RequestParam(value = "draw", required = false) Integer draw,

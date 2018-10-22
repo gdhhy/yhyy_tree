@@ -69,7 +69,7 @@
                     ],
 
                     'columnDefs': [
-                        {"orderable": false, className: 'text-center', "targets": 0, title: '层级'},
+                        {"orderable": true, className: 'text-center', "targets": 0, title: '层级'},
                         {"orderable": true, className: 'text-center', "targets": 1, title: '姓名'},
                         {
                             "orderable": true, className: 'text-center', "targets": 2, title: '云科号',

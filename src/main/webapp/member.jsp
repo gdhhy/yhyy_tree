@@ -228,7 +228,7 @@
                 var searchParam = "?threeThirty=" + $('#three_thirty').is(':checked');
                 $('.form-search :text').each(function () {
                     if ($(this).val())
-                        searchParam += "&" + $(this).attr("name") + "=" + $(this).val();
+                        searchParam += "&" + $(this).attr("name") + "=" + $(this).val().trim();
                 });
                 if (searchParam !== "")
                     url = "/listMember.jspx" + searchParam;

@@ -26,7 +26,7 @@
             <if test="@com.zcreate.Ognl@isNotEmpty(param.phone)">AND phone = #{param.phone:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.idCard)">AND id_card = #{param.idCard:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.parentNo)">AND parent_no = #{param.parentNo:INTEGER}</if>
-            <if test="@com.zcreate.Ognl@isNotEmpty(param.parentName)">AND member_info->'$."基本信息"."推荐人姓名"'= #{param.parentName:VARCHAR}</if>
+            <if test="@com.zcreate.Ognl@isNotEmpty(param.parentName)">AND member_info->'$."基本信息"."推荐人"'= #{param.parentName:VARCHAR}</if>
             <if test="param.threeThirty==true">AND child_depth>=2 and child_total>=30</if>
         </where>
     </sql>
