@@ -28,7 +28,7 @@ BEGIN
 		update tmp_table set parent_name='' where parent_name is null;
 		update tmp_table set real_name='' where real_name is null;
 		update tmp_table set id_card='' where id_card is null;
-    select cur_level '所在层级', real_name '姓名',member_no '云科号', parent_name '推荐人',parent_no '推荐人ID', id_card '身份证号', phone '电话' from tmp_table order by cur_level desc;
+    select cur_level '所在层级', real_name '姓名',member_no '会员号', parent_name '推荐人',parent_no '推荐人会员号', id_card '身份证号', phone '电话' from tmp_table order by cur_level desc;
 
     --  select * from tmp_table;
 

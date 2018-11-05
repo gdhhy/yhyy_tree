@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>上级关系 - 道和云科</title>
+    <title>上级关系 - ${short_title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -61,18 +61,18 @@
                     "columns": [
                         {"data": "所在层级", "sClass": "center"},
                         {"data": "姓名", "sClass": "center", defaultContent: ""},
-                        {"data": "用户ID", "sClass": "center"},
+                        {"data": "会员号", "sClass": "center"},
                         {"data": "身份证号", "sClass": "center"},
                         {"data": "电话", "sClass": "center"},
                         {"data": "推荐人", "sClass": "center", defaultContent: ""},
-                        {"data": "推荐人ID", "sClass": "center"}
+                        {"data": "推荐人会员号", "sClass": "center"}
                     ],
 
                     'columnDefs': [
                         {"orderable": true, className: 'text-center', "targets": 0, title: '层级'},
                         {"orderable": true, className: 'text-center', "targets": 1, title: '姓名'},
                         {
-                            "orderable": true, className: 'text-center', "targets": 2, title: '云科号',
+                            "orderable": true, className: 'text-center', "targets": 2, title: '会员号',
                             render: function (data, type, row, meta) {
                                 return '<a  href="#" class="showMemberInfo" >{0}</a>'.format(data);
                             }
@@ -80,7 +80,7 @@
                         {"orderable": true, className: 'text-center', "targets": 3, title: '证件号'},
                         {"orderable": true, className: 'text-center', "targets": 4, title: '电话'},
                         {"orderable": true, className: 'text-center', "targets": 5, title: '推荐人'},
-                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人云科号',
+                        {"orderable": true, className: 'text-center', "targets": 6, title: '推荐人会员号',
                             render: function (data, type, row, meta) {
                                 return '<a  href="#" class="showMemberInfo" >{0}</a>'.format(data);
                             }}

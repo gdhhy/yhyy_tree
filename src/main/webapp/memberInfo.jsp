@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title><c:out value="${member.realName}"/> - 成员信息 - 道和云科</title>
+    <title><c:out value="${member.realName}"/> - 成员信息 - ${short_title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -189,7 +189,6 @@
                                valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
                            }
                        });*/
-                    $(".profile-info-name:contains('云科盾')").css("width", "160px");
                     $(".profile-info-name:contains('充值金额')").css("width", "200px");
                     $(".profile-info-name:contains('姓名')").next().addClass("bigger-150");
                     $(".profile-info-name:contains('身份证号码')").next().addClass("bigger-130");

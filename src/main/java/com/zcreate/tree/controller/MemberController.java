@@ -8,6 +8,7 @@ import com.zcreate.tree.pojo.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,16 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Controller
 
 @RequestMapping("/")
 public class MemberController {
     private static Logger log = LoggerFactory.getLogger(MemberController.class);
+    /*@Value("#{prop.title}")
+    private String title;
+    @Value("#{prop.short_title}")
+    private String short_title;*/
+    @Resource
+    private Properties configs;
+
     @Autowired
     private MemberMapper memberMapper;
     private Gson gson = new GsonBuilder().setLongSerializationPolicy(LongSerializationPolicy.STRING).
@@ -109,8 +115,10 @@ public class MemberController {
 
     @RequestMapping(value = "/member", method = RequestMethod.GET)
     public String member(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
-        log.debug("url = member");
+        log.debug("title = " + configs.getProperty("title"));
 
+        model.addAttribute("title",  configs.getProperty("title"));
+        model.addAttribute("short_title", configs.getProperty("short_title"));
         return "/member";
     }
 
@@ -129,7 +137,8 @@ public class MemberController {
         List<Member> members = memberMapper.selectMember(param);
         if (members.size() >= 1)
             model.addAttribute("member", members.get(0));
-
+        model.addAttribute("title",  configs.getProperty("title"));
+        model.addAttribute("short_title", configs.getProperty("short_title"));
 
         return "/memberInfo";
     }
@@ -189,4 +198,5 @@ public class MemberController {
         result.put("recordsFiltered", recordCount);
         return gson.toJson(result);
     }
+
 }

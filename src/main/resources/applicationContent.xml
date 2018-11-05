@@ -5,9 +5,9 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://127.0.0.1:3308/cop?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=GMT%2B8"/>
-        <property name="username" value="root"/>
-        <property name="password" value="123456"/>
+        <property name="url" value="jdbc:mysql://192.168.146.1:3309/xingliao?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=GMT%2B8"/>
+        <property name="username" value="user1"/>
+        <property name="password" value="cjdlx"/>
         <property name="maxIdle" value="50"/>
         <property name="initialSize" value="5"/>
     </bean>
@@ -18,5 +18,9 @@
     <bean id="memberMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
         <property name="mapperInterface" value="com.zcreate.tree.dao.MemberMapper"/>
+    </bean>
+    <bean id="configs" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:config.properties"/>
+        <property name="fileEncoding" value="UTF-8"/>
     </bean>
 </beans>

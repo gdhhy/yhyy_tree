@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>云科传销查询系统</title>
+    <title>${title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -59,11 +59,7 @@
                         {"data": "realName", "sClass": "center"},
                         {"data": "idCard", "sClass": "center"},
                         {"data": "phone", "sClass": "center"},
-                        {"data": "userLevel", "sClass": "center"},
-                        {"data": "yunkePoint", "sClass": "center"},
-                        {"data": "deposit", "sClass": "center"},
-                        {"data": "withdraw", "sClass": "center"},
-                        {"data": "parentName", "sClass": "center"},
+                        {"data": "parentNo", "sClass": "center"},
                         {"data": "curLevel", "sClass": "center"},
                         {"data": "childTotal", "sClass": "center"},
                         {"data": "childDepth", "sClass": "center"},
@@ -78,41 +74,26 @@
                             }
                         },
                         {
-                            "orderable": false, "targets": 1, title: '云科号', render: function (data, type, row, meta) {
+                            "orderable": false, "targets": 1, title: '会员号', render: function (data, type, row, meta) {
                                 return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberId={0}">{1}</a>'.format(row["memberId"], data);
                             }
                         },
-                        {"orderable": false, "targets": 2, title: '用户名'},
+                        {"orderable": false, "targets": 2, title: '会员名'},
                         {"orderable": false, "targets": 3, title: '姓名'},
                         {"orderable": false, "targets": 4, title: '证件号'},
                         {"orderable": false, "targets": 5, title: '手机号'},
-                        {"orderable": false, "targets": 6, title: '用户类型'},
-                        {"orderable": false, "targets": 7, title: '云科盾'},
                         {
-                            "orderable": false, "targets": 8, title: '充值记录',
-                            render: function (data, type, row, meta) {
-                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberDeposit.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
-                            }
-                        },
-                        {
-                            "orderable": false, "targets": 9, title: '提现金额',
-                            render: function (data, type, row, meta) {
-                                return data > 0 ? '<a href="#" class="hasDetail" data-Url="/memberWithdraw.jsp?memberId={0}">{1}</a>'.format(row["memberId"], data) : '';
-                            }
-                        },
-
-                        {
-                            "orderable": false, "targets": 10, title: '推荐人',
+                            "orderable": false, "targets": 6, title: '推荐人',
                             render: function (data, type, row, meta) {
                                 return '<a href="#" class="research" name="parentNo" data-parentNo="{0}">{1}</a>'.format(row["parentNo"], data);
                             }
                         },
-                        {"orderable": false, 'targets': 11, title: '当前层级'},
-                        {"orderable": false, "targets": 12, title: '下级总数'},
-                        {"orderable": false, "targets": 13, title: '最深级数'},
-                        {"orderable": false, 'targets': 14, title: '直接下级数'},
+                        {"orderable": false, 'targets': 7, title: '当前层级'},
+                        {"orderable": false, "targets": 8, title: '下级总数'},
+                        {"orderable": false, "targets": 9, title: '最深级数'},
+                        {"orderable": false, 'targets': 10, title: '直接下级数'},
                         {
-                            "orderable": false, 'targets': 15, title: '查看上级',
+                            "orderable": false, 'targets': 11, title: '查看上级',
                             render: function (data, type, row, meta) {
                                 return '<div class="hidden-sm hidden-xs action-buttons">' +
                                     '<a class="hasDetail" href="#" data-Url="/memberParent.jsp?memberNo={0}&realName={1}"   >'.format(row["memberNo"], encodeURI(encodeURI(row["realName"]))) +
@@ -141,17 +122,6 @@
                     "serverSide": true,
                     select: {style: 'single'}
                 });
-            myTable.on('xhr', function (e, settings, json, xhr) {
-                if (json.data.length > 0)
-                    for (var i = 0; i < json.data.length; i++) {
-                        var memberInfo = JSON.parse(json.data[i].memberInfo);
-                        json.data[i].userLevel = memberInfo['基本信息']['等级'];
-                        json.data[i].parentName = memberInfo['基本信息']['推荐人'] === '' ? json.data[i].parentNo : memberInfo['基本信息']['推荐人'];
-                        json.data[i].deposit = memberInfo['资金']['充值金额'];
-                        json.data[i].withdraw = memberInfo['资金']['提现金额'];
-                        json.data[i].yunkePoint = memberInfo['资金']['云科盾'];
-                    }
-            });
             myTable.on('draw', function () {
                 var url;
                 /* $('#dynamic-table tr').find('a:eq(0)').click(function () {
@@ -173,17 +143,11 @@
             $('.btn-success').click(function () {
                 search();
             });
-            $('.form-search :text:lt(2)').each(function () {
+            $('.form-search :text').each(function () {
                 $(this).width(80);
             });
-            $('.form-search :text:eq(2)').each(function () {
-                $(this).width(160);
-            });
-            $('.form-search :text:eq(3)').each(function () {
-                $(this).width(90);
-            });
-            $('.form-search :text:gt(3)').each(function () {
-                $(this).width(60);
+            $('.form-search input[name="idCard"]').each(function () {
+                $(this).width(100);
             });
             $('.form-search :text').keydown(function (event) {
                 if (event.keyCode === 13)
@@ -252,8 +216,11 @@
             <div class="breadcrumbs" id="breadcrumbs">
                 <ul class="breadcrumb">
                     <form class="form-search form-inline">
-                        <label>云科号：</label>
-                        <input type="text" name="memberNo" placeholder="云科号……" class="nav-search-input"
+                        <label>会员号：</label>
+                        <input type="text" name="memberNo" placeholder="会员号……" class="nav-search-input"
+                               autocomplete="off"/>
+                        <label>会员名：</label>
+                        <input type="text" name="userName" placeholder="会员名……" class="nav-search-input"
                                autocomplete="off"/>
                         姓名：
                         <input type="text" name="realName" placeholder="姓名……" class="nav-search-input"
@@ -263,9 +230,9 @@
                         手机号：
                         <input type="text" name="phone" placeholder="手机号……" class="nav-search-input"
                                autocomplete="off"/>
-                        推荐人 ：
-                        <input type="text" name="parentName" placeholder="推荐人姓名……" class="nav-search-input"
-                               autocomplete="off"/>&nbsp;&nbsp;&nbsp;
+                        推荐人号 ：
+                        <input type="text" name="parentNo" placeholder="推荐人号……" class="nav-search-input"
+                               autocomplete="off"/>
                         三层30人：
                         <input type="checkbox" id="three_thirty">&nbsp;&nbsp;&nbsp;
                         <button class="btn btn-sm btn-reset" type="reset">
