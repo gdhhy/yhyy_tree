@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
-    <title>提现记录 - ${short_title}</title>
+    <title>订单列表 - ${short_title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
@@ -44,7 +44,7 @@
         jQuery(function ($) {
             var memberNo = $.getUrlParam("memberNo");
 
-            var url = "/withdraw.jspx?memberNo=" + memberNo;
+            var url = "/order.jspx?memberNo=" + memberNo;
 
             function showMemberInfo(memberNo) {
                 $.getJSON("/listMember.jspx?memberNo=" + memberNo, function (result) { //https://www.cnblogs.com/liuling/archive/2013/02/07/sdafsd.html
@@ -63,21 +63,18 @@
                 .DataTable({
                     bAutoWidth: false,
                     "columns": [
-                        {"data": "userid", "sClass": "center"},
-                        {"data": "申请时间", "sClass": "center"},
-                        {"data": "银行名称", "sClass": "center"},
-                        {"data": "银行卡号", "sClass": "center"},
-                        {"data": "用户名", "sClass": "center"},
-                        {"data": "联系电话", "sClass": "center"},
-                        {"data": "金额", "sClass": "center"},
-                        {"data": "处理时间", "sClass": "center"},
-                        {"data": "货币类型", "sClass": "center"},
-                        {"data": "备注", "sClass": "center"},
-                        {"data": "第三方交易号", "sClass": "center"},
-                        {"data": "状态", "sClass": "center"},
-                        {"data": "到账状态", "sClass": "center"},
-                        {"data": "账户类型", "sClass": "center"},
-                        {"data": "单号", "sClass": "center"}
+                        {"data": "订单标识", "sClass": "center"},
+                        {"data": "买家会员名", "sClass": "center"},
+                        {"data": "订单时间", "sClass": "center"},
+                        {"data": "付款时间", "sClass": "center"},
+                        {"data": "供货商用户名", "sClass": "center"},
+                        {"data": "支付方式名称", "sClass": "center"},
+                        {"data": "描述", "sClass": "center"},
+                        {"data": "支付积分", "sClass": "center"},
+                        {"data": "订单的货币价格总计", "sClass": "center"},
+                        {"data": "支付金额", "sClass": "center"},
+                        {"data": "订单状态", "sClass": "center"},
+                        {"data": "订单编号", "sClass": "center"}
                     ],
 
                     'columnDefs': [
@@ -86,20 +83,24 @@
                                 return meta.row + 1 + meta.settings._iDisplayStart;
                             }
                         },
-                        {"orderable": true, 'targets': 1, title: '申请时间', width: 160},
-                        {"orderable": false, "targets": 2, title: '银行名称'},
-                        {"orderable": false, "targets": 3, title: '银行卡号'},
-                        {"orderable": false, "targets": 4, title: '用户名'},
-                        {"orderable": false, "targets": 5, title: '联系电话'},
-                        {"orderable": false, "targets": 6, title: '金额'},
-                        {"orderable": false, "targets": 7, title: '处理时间'},
-                        {"orderable": false, "targets": 8, title: '货币类型'},
-                        {"orderable": false, "targets": 9, title: '备注'},
-                        {"orderable": false, 'targets': 10, title: '第三方交易号'},
-                        {"orderable": false, 'targets': 11, title: '状态'},
-                        {"orderable": false, 'targets': 12, title: '到账状态'},
-                        {"orderable": false, 'targets': 13, title: '账户类型'},
-                        {"orderable": false, 'targets': 14, title: '单号'}
+                        {"orderable": true, 'targets': 1, title: '买家会员名'},
+                        {"orderable": true, 'targets': 2, title: '订单时间', width: 160},
+                        {"orderable": true, 'targets': 3, title: '付款时间', width: 160},
+                        {"orderable": false, "targets": 4, title: '供货商用户名'},
+                        {"orderable": false, "targets": 5, title: '支付方式名称'},
+                        {"orderable": false, "targets": 6, title: '描述'},
+                        {"orderable": false, "targets": 7, title: '支付积分'},
+                        {"orderable": false, "targets": 8, title: '合计金额'},
+                        {"orderable": false, "targets": 9, title: '支付金额'},
+                        {"orderable": false, 'targets': 10, title: '订单状态'},
+                        {
+                            "orderable": false, 'targets': 11, title: '产品明细',
+                            render: function (data, type, row, meta) {
+                                return row["订单的货币价格总计"] > 0.0001 ? '<a class="hasDetail" href="#" data-Url="/memberProduct.jspx?memberNo={0}&realName={1}&orderNo={2}">'.
+                                format(memberNo, encodeURI(encodeURI($('#realName').text())), data)  : '';
+
+                            }
+                        }
                     ],
                     "aLengthMenu": [[20, 100, 1000, -1], ["20", "100", "1000", "全部"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
@@ -112,11 +113,11 @@
                     "footerCallback": function (tfoot, data, start, end, display) {
                         var total = 0.0;
                         $.each(data, function (index, value) {
-                            if (value["到账状态"] === '已到账')
-                                total += value["金额"];
+                            if (value["订单状态"] === '交易完成(已评价)')
+                                total += value["订单的货币价格总计"];
                         });
                         // Update footer
-                        $(tfoot).find('th').eq(0).html('已到账金额合计： ' + accounting.formatMoney(total, '￥'));
+                        $(tfoot).find('th').eq(0).html('交易完成 支付金额合计： ' + accounting.formatMoney(total, '￥'));
                     },
                     select: {style: 'single'}
                 });
@@ -177,8 +178,7 @@
                             <div class="col-xs-12">
                                 <div class="table-header">
                                     姓名：<span id="realName"></span>，身份证号：<span id="idCard"></span>，
-                                    会员号：<span id="memberNo"></span>
-                                    ，提现记录
+                                    会员号：<span id="memberNo"></span>，订单列表
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <!-- div.table-responsive -->

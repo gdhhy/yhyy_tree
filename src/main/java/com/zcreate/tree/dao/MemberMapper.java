@@ -22,7 +22,11 @@ public interface MemberMapper {
 
     List<Map<String, Object>> selectWithdraw(@Param("param") Map<String, Object> param);
 
-    int getDepositCount(@Param("param") Map<String, Object> param);
+    int getProductCount(@Param("param") Map<String, Object> param);
 
-    List<Map<String, Object>> selectDeposit(@Param("param") Map<String, Object> param);
+    List<Map<String, Object>> selectProduct(@Param("param") Map<String, Object> param);
+
+    int getOrderCount(@Param("param") Map<String, Object> param);
+
+    List<Map<String, Object>> selectOrder(@Param("param") Map<String, Object> param);
 }

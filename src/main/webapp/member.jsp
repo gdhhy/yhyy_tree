@@ -64,7 +64,9 @@
                         {"data": "childTotal", "sClass": "center"},
                         {"data": "childDepth", "sClass": "center"},
                         {"data": "directCount", "sClass": "center"},
-                        {"data": "memberNo", "sClass": "center"}
+                        {"data": "memberNo", "sClass": "center"},
+                        {"data": "withdrawMoney", "sClass": "center"},
+                        {"data": "consumeMoney", "sClass": "center"}
                     ],
 
                     'columnDefs': [
@@ -75,7 +77,7 @@
                         },
                         {
                             "orderable": false, "targets": 1, title: '会员号', render: function (data, type, row, meta) {
-                                return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberId={0}">{1}</a>'.format(row["memberId"], data);
+                                return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberNo={0}">{1}</a>'.format(data, data);
                             }
                         },
                         {"orderable": false, "targets": 2, title: '会员名'},
@@ -96,10 +98,22 @@
                             "orderable": false, 'targets': 11, title: '查看上级',
                             render: function (data, type, row, meta) {
                                 return '<div class="hidden-sm hidden-xs action-buttons">' +
-                                    '<a class="hasDetail" href="#" data-Url="/memberParent.jsp?memberNo={0}&realName={1}"   >'.format(row["memberNo"], encodeURI(encodeURI(row["realName"]))) +
+                                    '<a class="hasDetail" href="#" data-Url="/memberParent.jspx?memberNo={0}&realName={1}">'.format(data, encodeURI(encodeURI(row["realName"]))) +
                                     '<i class="ace-icon green glyphicon glyphicon-arrow-up bigger-130"></i>' +
                                     '</a>' +
                                     '</div>';
+                            }
+                        },
+                        {
+                            "orderable": false, 'targets': 12, title: '提现金额',
+                            render: function (data, type, row, meta) {
+                                return data > 0.0001 ? '<a href="#" class="hasDetail" data-Url="/memberWithdraw.jspx?memberNo={0}">{1}</a>'.format(row["memberNo"], data) : '';
+                            }
+                        },
+                        {
+                            "orderable": false, 'targets': 13, title: '消费金额',
+                            render: function (data, type, row, meta) {
+                                return data > 0.0001 ? '<a href="#" class="hasDetail" data-Url="/memberOrder.jspx?memberNo={0}">{1}</a>'.format(row["memberNo"], data) : '';
                             }
                         }
                     ],
@@ -122,12 +136,16 @@
                     "serverSide": true,
                     select: {style: 'single'}
                 });
+            myTable.on('xhr', function (e, settings, json, xhr) {
+                if (json.data.length > 0)
+                    for (var i = 0; i < json.data.length; i++) {
+                        var memberInfo = JSON.parse(json.data[i].memberInfo);
+                        json.data[i].withdrawMoney = memberInfo['资金']['取现总金额'];
+                        json.data[i].consumeMoney  = memberInfo['资金']['累计消费'];
+                    }
+            });
             myTable.on('draw', function () {
                 var url;
-                /* $('#dynamic-table tr').find('a:eq(0)').click(function () {
-                     url = "/memberInfo.jspx?memberNo={0}".format($(this).text());
-                     window.open(url, "_blank");
-                 });*/
 
                 $('#dynamic-table tr').find('.research').click(function () {
                     url = "/listMember.jspx?{0}={1}".format($(this).attr("name"), $(this).attr("data-parentNo"));

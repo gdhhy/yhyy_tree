@@ -42,11 +42,12 @@
 
     <script type="text/javascript">
         jQuery(function ($) {
-            var memberId = $.getUrlParam("memberId");
-            var url = "/memberDeposit.jspx?memberId=" + memberId;
+            var orderNo = $.getUrlParam("orderNo");
+            var memberNo = $.getUrlParam("memberNo");
+            var url = "/product.jspx?orderNo=" + orderNo;
 
-            function showMemberInfo(memberId) {
-                $.getJSON("/listMember.jspx?memberId=" + memberId, function (result) { //https://www.cnblogs.com/liuling/archive/2013/02/07/sdafsd.html
+            function showMemberInfo(memberNo) {
+                $.getJSON("/listMember.jspx?memberNo=" + memberNo, function (result) { //https://www.cnblogs.com/liuling/archive/2013/02/07/sdafsd.html
                     if (result.data.length > 0) {
                         $('#realName').text(result.data[0].realName);
                         $('#idCard').text(result.data[0].idCard);
@@ -56,22 +57,22 @@
                 });
             }
 
-            showMemberInfo(memberId);
+            showMemberInfo(memberNo);
             var myTable = $('#dynamic-table')
             //.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
                 .DataTable({
                     bAutoWidth: false,
                     "columns": [
-                        {"data": "rechargeId", "sClass": "center"},
-                        {"data": "createtime", "sClass": "center"},
-                        {"data": "bankinfo", "sClass": "center"},
-                        {"data": "真实姓名", "sClass": "center"},
-                        {"data": "支付类型", "sClass": "center"},
-                        {"data": "remark", "sClass": "center"},
-                        {"data": "金额", "sClass": "center"},
-                        {"data": "状态", "sClass": "center"},
-                        {"data": "审核时间", "sClass": "center"},
-                        {"data": "返回消息", "sClass": "center"}
+                        {"data": "ID", "sClass": "center"},
+                        {"data": "订单时间", "sClass": "center"},
+                        {"data": "订购会员ID", "sClass": "center"},
+                        {"data": "供应商编号", "sClass": "center"},
+                        {"data": "产品名称", "sClass": "center"},
+                        {"data": "购买的产品数量", "sClass": "center"},
+                        {"data": "产品说明、如型号、颜色、规格等", "sClass": "center"},
+                        {"data": "产品单价", "sClass": "center"},
+                        {"data": "实际支付金额", "sClass": "center"},
+                        {"data": "该订单产品的状态", "sClass": "center"}
                     ],
 
                     'columnDefs': [
@@ -80,15 +81,15 @@
                                 return meta.row + 1 + meta.settings._iDisplayStart;
                             }
                         },
-                        {"orderable": true, 'targets': 1, title: '操作时间', width: 160},
-                        {"orderable": false, "targets": 2, title: '银行信息'},
-                        {"orderable": false, "targets": 3, title: '真实姓名'},
-                        {"orderable": false, "targets": 4, title: '支付类型'},
-                        {"orderable": false, "targets": 5, title: '备注'},
-                        {"orderable": false, "targets": 6, title: '金额'},
-                        {"orderable": true, "targets": 7, title: '状态'},
-                        {"orderable": true, "targets": 8, title: '审核时间'},
-                        {"orderable": false, "targets": 9, title: '交易消息'}
+                        {"orderable": true, 'targets': 1, title: '订单时间', width: 160},
+                        {"orderable": false, "targets": 2, title: '订购会员ID'},
+                        {"orderable": false, "targets": 3, title: '供应商编号'},
+                        {"orderable": false, "targets": 4, title: '产品名称'},
+                        {"orderable": false, "targets": 5, title: '数量'},
+                        {"orderable": false, "targets": 6, title: '产品描述'},
+                        {"orderable": true, "targets": 7, title: '产品单价'},
+                        {"orderable": true, "targets": 8, title: '支付金额'},
+                        {"orderable": false, "targets": 9, title: '状态'}
                     ],
                     "aLengthMenu": [[20, 100, 1000, -1], ["20", "100", "1000", "全部"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序
@@ -170,7 +171,7 @@
 
                             <div class="col-xs-12">
                                 <div class="table-header">
-                                    姓名：<span id="realName"></span>，身份证号：<span id="idCard"></span>， 云科号：<span id="memberNo"></span>，充值记录
+                                    姓名：<span id="realName"></span>，身份证号：<span id="idCard"></span>， 会员号：<span id="memberNo"></span>，订单明细
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <!-- div.table-responsive -->

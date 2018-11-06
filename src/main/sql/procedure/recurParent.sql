@@ -1,6 +1,6 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `recurParent`(in p_member_no int, in p_maxlevel int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `recurParent`(in p_member_no varchar(20), in p_maxlevel int)
 BEGIN
-    declare v_parent_no int;
+    declare v_parent_no varchar(20);
     declare v_parent_name varchar(100);
     declare v_real_name varchar(100);
     declare v_id_card varchar(100);

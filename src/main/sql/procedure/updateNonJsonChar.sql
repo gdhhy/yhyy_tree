@@ -21,7 +21,7 @@ CREATE PROCEDURE `updateNonJsonChar`(in p_schema_name varchar(50), in p_table_na
     WHILE done = 0 DO
       if v_data_type = 'varchar' or v_data_type = 'text' then
         set @v_sql = concat('update ', p_schema_name, '.', p_table_name, ' set ', v_column_name,
-                            ' = REPLACE(REPLACE(REPLACE(REPLACE(', v_column_name, ', CHAR(10),''''), CHAR(13),''''), char(34),''''), CHAR(9),'''');');
+                            ' = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(', v_column_name, ', CHAR(10),''''), CHAR(13),''''), char(34),''''), CHAR(9),''''), CHAR(8),'''');');
         -- select @v_sql;
         prepare stmt from @v_sql;
         EXECUTE stmt;
@@ -34,3 +34,5 @@ CREATE PROCEDURE `updateNonJsonChar`(in p_schema_name varchar(50), in p_table_na
 
     CLOSE cur1;
   end
+
+  #     update member set info2 = REPLACE(REPLACE(REPLACE(REPLACE(info, CHAR(10),''), CHAR(13),''),   CHAR(9),''), CHAR(8),'');

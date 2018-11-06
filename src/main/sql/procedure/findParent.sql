@@ -1,12 +1,12 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `findParent`(in p_member_no int, in p_maxlevel int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `findParent`(in p_member_no varchar(20), in p_maxlevel varchar(20))
 BEGIN
     -- 递归深度
     set @@max_sp_recursion_depth = 1000;
 
     drop table if exists tmp_table;
     CREATE TEMPORARY TABLE tmp_table (
-      parent_no   int,
-      member_no   int,
+      parent_no   varchar(20),
+      member_no   varchar(20),
       parent_name varchar(100) default '',
       real_name   varchar(100) default '',
       id_card     varchar(100) default '',

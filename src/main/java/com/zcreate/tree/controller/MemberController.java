@@ -8,7 +8,6 @@ import com.zcreate.tree.pojo.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +23,6 @@ import java.util.*;
 @RequestMapping("/")
 public class MemberController {
     private static Logger log = LoggerFactory.getLogger(MemberController.class);
-    /*@Value("#{prop.title}")
-    private String title;
-    @Value("#{prop.short_title}")
-    private String short_title;*/
     @Resource
     private Properties configs;
 
@@ -38,7 +33,7 @@ public class MemberController {
 
     @ResponseBody
     @RequestMapping(value = "/listMember", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String listMember(@RequestParam(value = "memberId", required = false) Long memberId,
+    public String listMember(/*@RequestParam(value = "memberId", required = false) Long memberId,*/
                              @RequestParam(value = "userName", required = false) String userName,
                              @RequestParam(value = "memberNo", required = false) String memberNo,
                              @RequestParam(value = "phone", required = false) String phone,
@@ -52,7 +47,7 @@ public class MemberController {
                              @RequestParam(value = "length", required = false, defaultValue = "100") Integer length
     ) {
         Map<String, Object> param = new HashMap<>();
-        param.put("memberId", memberId);
+       /* param.put("memberId", memberId);*/
         param.put("userName", userName);
         param.put("memberNo", memberNo);
         param.put("phone", phone);
@@ -64,11 +59,16 @@ public class MemberController {
         param.put("start", start);
         if (parentNo == null)
             param.put("length", length);
-        List<Member> members = memberMapper.selectMember(param);
-        int recordCount = memberMapper.getMemberCount(param);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("data", members);
+        int recordCount = memberMapper.getMemberCount(param);
+        if (recordCount > 0) {
+            List<Member> members = memberMapper.selectMember(param);
+            result.put("data", members);
+        } else
+            result.put("data", "");
+
+
         result.put("draw", draw);//draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。
         result.put("recordsTotal", recordCount);
         result.put("recordsFiltered", recordCount);
@@ -115,29 +115,56 @@ public class MemberController {
 
     @RequestMapping(value = "/member", method = RequestMethod.GET)
     public String member(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
-        log.debug("title = " + configs.getProperty("title"));
-
-        model.addAttribute("title",  configs.getProperty("title"));
+        model.addAttribute("title", configs.getProperty("title"));
         model.addAttribute("short_title", configs.getProperty("short_title"));
         return "/member";
+    }
+
+    @RequestMapping(value = "/memberParent", method = RequestMethod.GET)
+    public String memberParent(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
+        model.addAttribute("title", configs.getProperty("title"));
+        model.addAttribute("short_title", configs.getProperty("short_title"));
+        return "/memberParent";
+    }
+
+    @RequestMapping(value = "/memberWithdraw", method = RequestMethod.GET)
+    public String memberWithdraw(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
+        model.addAttribute("title", configs.getProperty("title"));
+        model.addAttribute("short_title", configs.getProperty("short_title"));
+        return "/memberWithdraw";
+    }
+
+
+    @RequestMapping(value = "/memberOrder", method = RequestMethod.GET)
+    public String memberOrder(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
+        model.addAttribute("title", configs.getProperty("title"));
+        model.addAttribute("short_title", configs.getProperty("short_title"));
+        return "/memberOrder";
+    }
+    @RequestMapping(value = "/memberProduct", method = RequestMethod.GET)
+    public String memberProduct(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
+        model.addAttribute("title", configs.getProperty("title"));
+        model.addAttribute("short_title", configs.getProperty("short_title"));
+        return "/memberOrder";
     }
 
 
     @RequestMapping(value = "/memberInfo", method = RequestMethod.GET)
     public String memberInfo(@RequestParam(value = "memberNo", required = false) String memberNo,
-                             @RequestParam(value = "memberId", required = false) Long memberId,
+                            /* @RequestParam(value = "memberId", required = false) Long memberId,*/
                              @RequestParam(value = "realName", required = false) String realName,
                              @RequestParam(value = "userName", required = false) String userName,
                              ModelMap model) {
         Map<String, Object> param = new HashMap<>();
         param.put("memberNo", memberNo);
-        param.put("memberId", memberId);
+        //param.put("memberId", memberId);
         param.put("realName", realName);
         param.put("userName", userName);
         List<Member> members = memberMapper.selectMember(param);
         if (members.size() >= 1)
             model.addAttribute("member", members.get(0));
-        model.addAttribute("title",  configs.getProperty("title"));
+
+        model.addAttribute("title", configs.getProperty("title"));
         model.addAttribute("short_title", configs.getProperty("short_title"));
 
         return "/memberInfo";
@@ -160,40 +187,78 @@ public class MemberController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/memberDeposit", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String memberDeposit(@RequestParam(value = "memberId", required = false) Long memberId,
+    @RequestMapping(value = "/product", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String product(@RequestParam(value = "orderNo", required = false) String orderNo,
+                          @RequestParam(value = "memberNo", required = false) String memberNo,
                                 @RequestParam(value = "draw", required = false) Integer draw,
                                 @RequestParam(value = "start", required = false) Integer start,
                                 @RequestParam(value = "length", required = false, defaultValue = "10000") Integer length) {
         Map<String, Object> param = new HashMap<>();
-        param.put("user_id", memberId);
+        param.put("orderNo", orderNo);
+        param.put("memberNo", memberNo);
         param.put("start", start);
         param.put("length", length);
 
-        int recordCount = memberMapper.getDepositCount(param);
         Map<String, Object> result = new HashMap<>();
-        result.put("data", memberMapper.selectDeposit(param));
-        result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
+
+        int recordCount = memberMapper.getProductCount(param);
+        if (recordCount > 0)
+            result.put("data", memberMapper.selectProduct(param));
+        else
+            result.put("data", "");
+        //result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
         result.put("recordsTotal", recordCount);
         result.put("recordsFiltered", recordCount);
         return gson.toJson(result);
     }
 
     @ResponseBody
-    @RequestMapping(value = "/memberWithdraw", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String memberWithdraw(@RequestParam(value = "memberId", required = false) Long memberId,
-                                 @RequestParam(value = "draw", required = false) Integer draw,
-                                 @RequestParam(value = "start", required = false) Integer start,
-                                 @RequestParam(value = "length", required = false, defaultValue = "10000") Integer length) {
+    @RequestMapping(value = "/withdraw", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String withdraw(@RequestParam(value = "memberNo", required = false) String memberNo,
+                           @RequestParam(value = "draw", required = false) Integer draw,
+                           @RequestParam(value = "start", required = false) Integer start,
+                           @RequestParam(value = "length", required = false, defaultValue = "10000") Integer length) {
         Map<String, Object> param = new HashMap<>();
-        param.put("user_id", memberId);
+        param.put("memberNo", memberNo);
         param.put("start", start);
         param.put("length", length);
 
-        int recordCount = memberMapper.getWithdrawCount(param);
+
         Map<String, Object> result = new HashMap<>();
-        result.put("data", memberMapper.selectWithdraw(param));
-        result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
+
+        int recordCount = memberMapper.getWithdrawCount(param);
+        if (recordCount > 0)
+            result.put("data", memberMapper.selectWithdraw(param));
+        else
+            result.put("data", "");
+
+        //result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
+        result.put("recordsTotal", recordCount);
+        result.put("recordsFiltered", recordCount);
+        return gson.toJson(result);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/order", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String order(@RequestParam(value = "memberNo", required = false) String memberNo,
+                           @RequestParam(value = "draw", required = false) Integer draw,
+                           @RequestParam(value = "start", required = false) Integer start,
+                           @RequestParam(value = "length", required = false, defaultValue = "10000") Integer length) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("memberNo", memberNo);
+        param.put("start", start);
+        param.put("length", length);
+
+
+        Map<String, Object> result = new HashMap<>();
+
+        int recordCount = memberMapper.getOrderCount(param);
+        if (recordCount > 0)
+            result.put("data", memberMapper.selectOrder(param));
+        else
+            result.put("data", "");
+
+        //result.put("draw", draw);/*draw——number类型——请求次数计数器，每次发送给服务器后原封返回，因为请求是异步的，为了确保每次请求都能对应到服务器返回到的数据。*/
         result.put("recordsTotal", recordCount);
         result.put("recordsFiltered", recordCount);
         return gson.toJson(result);

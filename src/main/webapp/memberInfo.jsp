@@ -192,7 +192,7 @@
                     $(".profile-info-name:contains('充值金额')").css("width", "200px");
                     $(".profile-info-name:contains('姓名')").next().addClass("bigger-150");
                     $(".profile-info-name:contains('身份证号码')").next().addClass("bigger-130");
-                    $(".profile-info-name:contains('电话号码')").next().addClass("bigger-150");
+                    //$(".profile-info-name:contains('电话号码')").next().addClass("bigger-150");
                 }
 
             }

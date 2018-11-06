@@ -20,12 +20,12 @@
     <sql id="queryWhere">
         <where>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.memberId)">AND member_id = #{param.memberId:BIGINT}</if>
-            <if test="@com.zcreate.Ognl@isNotEmpty(param.memberNo)">AND member_no = #{param.memberNo:INTEGER}</if>
+            <if test="@com.zcreate.Ognl@isNotEmpty(param.memberNo)">AND member_no = #{param.memberNo:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.userName)">AND user_name = #{param.userName:INTEGER}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.realName)">AND real_name like '%${param.realName}%'</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.phone)">AND phone = #{param.phone:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.idCard)">AND id_card = #{param.idCard:VARCHAR}</if>
-            <if test="@com.zcreate.Ognl@isNotEmpty(param.parentNo)">AND parent_no = #{param.parentNo:INTEGER}</if>
+            <if test="@com.zcreate.Ognl@isNotEmpty(param.parentNo)">AND parent_no = #{param.parentNo:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.parentName)">AND member_info->'$."基本信息"."推荐人"'= #{param.parentName:VARCHAR}</if>
             <if test="param.threeThirty==true">AND child_depth>=2 and child_total>=29</if>
         </where>
@@ -68,40 +68,91 @@
         call findParent(#{param.memberNo,jdbcType=VARCHAR,mode=IN}, #{param.maxlevel,jdbcType=INTEGER,mode=IN})
     </select>
     <!--充值记录-->
-    <select id="getDepositCount" resultType="int" parameterType="java.util.Map" useCache="true">
+    <select id="getProductCount" resultType="int" parameterType="java.util.Map" useCache="true">
         SELECT count(*)
-        FROM rechargeOrder
-        where userId = #{param.user_id:BIGINT}
+        FROM xs_orders_product
+        where xs_order = #{param.user_id:BIGINT}
     </select>
-    <select id="selectDeposit" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
-        select * from (
-        SELECT
-        a.linetransferid AS "流水号",
-        a.createtime  ,
-        ifnull( a.bankname,  '' ) AS "bankinfo",
-        ifnull( a.realname, '' ) AS "真实姓名",
-        CASE a.type WHEN 1 THEN"本人转账" WHEN 2 THEN"他人转账" else '' END AS "支付类型",
-        a.remark,
-        a.amount AS "金额",
-        CASE a.`STATUS` WHEN 1 THEN"待审核" WHEN 2 THEN"拒绝" WHEN 3 THEN"审核通过" WHEN 4 THEN"审核通过" END AS "状态",
-        ifnull(a.optime, '' ) AS "审核时间",
-        ifnull( a.opreason, '' ) AS "返回消息"
-        FROM
-        linetransfer a where userId= #{param.user_id:BIGINT}
-        union
-        SELECT
-        a.rechargeId "流水号",
-        a.createTime ,
-        ifnull(a.bankcard,'') as "bankinfo",
-        '-' AS "真实姓名",
-        CASE a.payType WHEN 1 THEN "支付宝" WHEN 2 THEN "微信" WHEN 3 THEN "先锋快捷支付" WHEN 4 THEN "国美支付" WHEN 10 THEN "支付宝扫码" WHEN 11 THEN "微信扫码" ELSE a.payType END as "支付类型",
-        '-' AS remark,
-        a.amount as "金额",
-        CASE a.status WHEN 1 THEN "未支付" WHEN 2 THEN "支付成功" WHEN 3 THEN "支付失败" end as "状态",
-        '-' AS "审核时间",
-        ifnull(a.resMessage,'') as "返回消息"
-        FROM rechargeOrder a  where userId= #{param.user_id:BIGINT}) A
-        order by createTime
+    <select id="selectProduct" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
+        select id 'ID',
+        order_id '订单id',
+        status '该订单产品的状态',
+        u_id '订购会员ID',
+        order_num '订单编号',
+        wd_uid '微店UID',
+        wd_username '微店用户名',
+        w_uid '网店编号',
+        s_uid '供应商编号',
+        product_id '产品ID',
+        product_name '产品名称',
+        product_num '购买的产品数量',
+        product_options_id '规格ID',
+        product_options_tag '产品属性标签',
+        product_desc '产品说明、如型号、颜色、规格等',
+        discount '打折备注',
+        zhekou '会员折扣',
+        price '产品的单价',
+        card_price 'card_price',
+        card_price_total '""',
+        supplier_price '商品供货价',
+        price_total '实际支付金额',
+        score '订单产品的积分单价',
+        pv 'pv',
+        score_total '实际支付的积分数量(全部)',
+        reward_score '购物获得的积分返利(全部) 没成数量',
+        FROM_UNIXTIME(order_time) '下订单时间',
+        pay_time '付款时间',
+        transmit_time '发货时间',
+        confirm_time '确认收货时间',
+        app_time ' 申请退货时间',
+        return_time '退货时间',
+        close_time '关闭订单时间',
+        `desc` '订单产品备注',
+        suc_time '完成交易时间',
+        profit '成交分成比例',
+        is_virtual '1=虚拟物品',
+        mac '商家mac',
+        reward_money '会员返利 成数量了',
+        profit_money '分润金额 成数量了',
+        pay_money '支付现金',
+        pay_coupon_money '支付代金',
+        pay_score '支付积分',
+        pay_join_money '联名支付金额',
+        pay_card_money '支付卡金额',
+        pay_card '支付卡号',
+        use_card '使用会员卡',
+        weight_total '物流费',
+        return_type '0 返代金 1 返卡余额',
+        is_comment '""',
+        pro_img '产品图片',
+        pro_link '""',
+        is_peisong '是否是配送站发货 1是',
+        share_id '分享信息id',
+        order_type '订单类型:0默认.1团购,2秒杀',
+        coupon_money '购物券',
+        coupon_money_total '购物券',
+        agent_price '""',
+        agent_price_total '""',
+        reward_money_total '""',
+        profit_money_total '""',
+        pv_total '""',
+        reward_score_total '""',
+        weight '重量',
+        yunfei_total '""',
+        supplier_price_total '""',
+        pay_coupon_money_real '""',
+        reward_coupon '赠送购物券',
+        reward_coupon_total '赠送购物券',
+        is_daofu '1 运费到付',
+        is_unsend '是否需要发货,1发货',
+        fuxiao_score '复消积分价',
+        fuxiao_score_total '复消积分总价',
+        product_no '产品货号',
+        psn '国标码' from xs_orders_product
+        <where>
+            <if test="@com.zcreate.Ognl@isNotEmpty(param.orderNo)">AND order_num = #{param.orderNo:BIGINT}</if>
+            <if test="@com.zcreate.Ognl@isNotEmpty(param.memberNo)">AND u_id = #{param.memberNo:VARCHAR}</if>
+        </where>
         <choose>
             <when test="param.start>0 and param.length >0">
                 limit #{param.start:INTEGER},#{param.length:INTEGER}
@@ -115,15 +166,110 @@
     <!--提现记录-->
     <select id="getWithdrawCount" resultType="int" parameterType="java.util.Map" useCache="true">
         SELECT count(*)
-        FROM moneywithdraw
-        where userid = #{param.user_id:BIGINT}
+        FROM take_cash_log
+        where userid = #{param.memberNo:VARCHAR}
     </select>
     <select id="selectWithdraw" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
-        SELECT i.id AS "提现流水号", i.userid, i.amount AS "出款金额", i.witamount AS "提现金额", i.pouamount AS "提现手续", i.bankinfo AS "银行卡信息", i.acctno AS "出款账户",
-        i.acctname AS "账户名称", CASE i.`status` WHEN 1 THEN "未处理" WHEN 2 THEN "已处理" WHEN 3 THEN "被拒绝" END AS "提现状态", ifnull( i.remark, '' ) AS "拒绝原因", i.createtime AS "提现时间"
-        FROM moneywithdraw i
-        where i.userid=#{param.user_id:BIGINT}
-        ORDER BY i.createtime asc
+        select userid,status '状态',CurrencyType '货币类型',case when bank ='' then bankname else bank end '银行名称',bankuser '用户名',bankcard '银行卡号',
+        phone '联系电话',money '金额',FROM_UNIXTIME(w_time) '申请时间', case when c_time >0 then FROM_UNIXTIME(c_time) else '' end '处理时间',
+        remark '备注',out_order_id '第三方交易号',
+        case in_status when 0 then '未处理' when 1 then '申请中' when 2 then '已到账' when 3 then '重发请求' when 4 then '发生错误' else '' end '到账状态',
+        case cardtype when 1 then '个人' when 2 then '企业' else '' end '账户类型',order_num '单号'
+        FROM take_cash_log
+        where userid=#{param.memberNo:VARCHAR}
+        <choose>
+            <when test="param.start>0 and param.length >0">
+                limit #{param.start:INTEGER},#{param.length:INTEGER}
+            </when>
+            <when test="param.length >0">
+                limit #{param.length:INTEGER}
+            </when>
+        </choose>
+    </select>
+    <!--提现记录-->
+    <select id="getOrderCount" resultType="int" parameterType="java.util.Map" useCache="true">
+        SELECT count(*)
+        FROM xs_order
+        where userid = #{param.memberNo:VARCHAR}
+    </select>
+    <select id="selectOrder" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
+        select id '订单标识',
+        case status when 0 then '未支付' when 1 then '待发货' when 2 then '待收货' when 4 then '退货中' when 5 then '已退货'
+        when 7 then '已关闭' when 8 then '交易完成(已评价)' when 9 then '维权中' else status end '订单状态',
+        -- is_del '逻辑删除', all is 0
+        order_num '订单编号',
+        u_id '买家会员id',
+        userid '买家会员名',
+        w_uid '配送站用户ID(无配送时为供货商自己)',
+        agent_id '配送站用户名',
+        s_uid '供货商用户ID',
+        ifnull(supplier_id,'') '供货商用户名',
+        discount '打折备注',
+        yunfei_total '运费(无配送给商家)',
+        price_total '订单的货币价格总计',
+        supplier_price_total '商家供货价',
+        pv_total 'pv(促销总金额)',
+        agent_price_total '配送站服务费(无配送给商家)',
+        score_total '订单积分的价格(扣积分)总计',
+        card_price_total '卡累计',
+        reward_money_total '赠送金额',
+        reward_coupon_total '赠送购物券',
+        reward_score_total '赠送积分',
+        -- is_daofuyf '1 到付运费',
+        -- is_peisong '是否是配送站发货 1是',
+        order_type '0配送站 1 自提',
+        order_agent_userid '自提配送站会员ID',
+        number_total '购买的所有产品的总数',
+        weight_total '商品总重',
+        industry '行业 25 电商',
+        ifnull(`desc`,'') '描述',
+        -- is_private '订单产品是否对推荐人公开',
+        -- is_update_rank '是否是升级的订单。1则为真', -- all 0
+        is_ck '是否出库',
+        -- is_delay '延迟收货状态0未申请1同意2拒绝3申请中', -- 0 or 1
+        delay_reason '延迟收货原因',
+        delay_time '延迟收货审请时间',
+        is_virtual '是否虚拟物品订单',
+        FROM_UNIXTIME(order_time) '订单时间',
+        if(pay_time>0,FROM_UNIXTIME(pay_time),'') '付款时间',
+        transmit_time '发货时间',
+        confirm_time '确认收货时间',
+        app_time '发货申请退货',
+        return_time '未发货退款时间',
+        close_time '关闭订单时间',
+        pay_type '支付方式 0余额 1会员卡', -- 0 1 5 8 9 10 11 12 13 15 16 99
+        ifnull(payment_class,'') '支付方式名称',
+        pay_money '支付金额',
+        pay_coupon_money '支付优惠券',
+        pay_score '支付积分',
+        pay_imprest '支付运营中心的钱包',
+        pay_join_money '支付合计金额',
+        pay_card_money '支付卡金额',
+        pay_card '支付卡号',
+        return_back '及时回调',
+        call_back '服务器回调',
+        my_order_id 'my_order_id',
+        call_time '最后通知时间',
+        call_nums 'call_nums',
+        call_suc_time '通知成功时间',
+        is_comment 'is_comment',
+        -- is_dayin '1打印',
+        return_money 'return_money',
+        card_discount_money '本店会员卡折扣金额',
+        coupon_money_total '购物券',
+        profit_money_total 'profit_money_total',
+        pay_coupon_money_real 'pay_coupon_money_real',
+        change_bl 'change_bl',
+        return_coupon_money '购物券退款',
+        is_unsend '是否需要发货,1需要发货',
+        is_active '是否激活',
+        fuxiao_score_total '总复消积分',
+        type '订单类型0系统类型，6复消积分类型，5升级类型', -- 0 1 2 3 4 5 6 8 11
+        is_leiji_update '是否累计升级',
+        is_send_js '是否传递了结算',
+        normal_or_update '是普通订单还是升级订单 0是普通订单 1是升级订单就是type=5' -- 0 1
+        from xs_order
+        where userid =#{param.memberNo:VARCHAR}
         <choose>
             <when test="param.start>0 and param.length >0">
                 limit #{param.start:INTEGER},#{param.length:INTEGER}
