@@ -145,7 +145,7 @@ public class MemberController {
     public String memberProduct(@RequestParam(value = "searchKey", required = false) String searchKey, ModelMap model) {
         model.addAttribute("title", configs.getProperty("title"));
         model.addAttribute("short_title", configs.getProperty("short_title"));
-        return "/memberOrder";
+        return "/memberProduct";
     }
 
 

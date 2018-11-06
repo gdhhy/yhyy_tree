@@ -71,7 +71,7 @@
     <select id="getProductCount" resultType="int" parameterType="java.util.Map" useCache="true">
         SELECT count(*)
         FROM xs_orders_product
-        where xs_order = #{param.user_id:BIGINT}
+        where order_num = #{param.orderNo:VARCHAR}
     </select>
     <select id="selectProduct" resultType="java.util.Map" parameterType="java.util.Map" useCache="true">
         select id 'ID',
@@ -100,7 +100,7 @@
         pv 'pv',
         score_total '实际支付的积分数量(全部)',
         reward_score '购物获得的积分返利(全部) 没成数量',
-        FROM_UNIXTIME(order_time) '下订单时间',
+        if(order_time>0,FROM_UNIXTIME(order_time),'') '下订单时间',
         pay_time '付款时间',
         transmit_time '发货时间',
         confirm_time '确认收货时间',
@@ -150,7 +150,7 @@
         product_no '产品货号',
         psn '国标码' from xs_orders_product
         <where>
-            <if test="@com.zcreate.Ognl@isNotEmpty(param.orderNo)">AND order_num = #{param.orderNo:BIGINT}</if>
+            <if test="@com.zcreate.Ognl@isNotEmpty(param.orderNo)">AND order_num = #{param.orderNo:VARCHAR}</if>
             <if test="@com.zcreate.Ognl@isNotEmpty(param.memberNo)">AND u_id = #{param.memberNo:VARCHAR}</if>
         </where>
         <choose>

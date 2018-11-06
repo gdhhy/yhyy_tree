@@ -44,6 +44,7 @@
         jQuery(function ($) {
             var orderNo = $.getUrlParam("orderNo");
             var memberNo = $.getUrlParam("memberNo");
+            $('#orderNo').text(orderNo);
             var url = "/product.jspx?orderNo=" + orderNo;
 
             function showMemberInfo(memberNo) {
@@ -64,13 +65,13 @@
                     bAutoWidth: false,
                     "columns": [
                         {"data": "ID", "sClass": "center"},
-                        {"data": "订单时间", "sClass": "center"},
+                        {"data": "下订单时间", "sClass": "center"},
                         {"data": "订购会员ID", "sClass": "center"},
                         {"data": "供应商编号", "sClass": "center"},
                         {"data": "产品名称", "sClass": "center"},
-                        {"data": "购买的产品数量", "sClass": "center"},
                         {"data": "产品说明、如型号、颜色、规格等", "sClass": "center"},
-                        {"data": "产品单价", "sClass": "center"},
+                        {"data": "产品的单价", "sClass": "center"},
+                        {"data": "购买的产品数量", "sClass": "center"},
                         {"data": "实际支付金额", "sClass": "center"},
                         {"data": "该订单产品的状态", "sClass": "center"}
                     ],
@@ -85,10 +86,10 @@
                         {"orderable": false, "targets": 2, title: '订购会员ID'},
                         {"orderable": false, "targets": 3, title: '供应商编号'},
                         {"orderable": false, "targets": 4, title: '产品名称'},
-                        {"orderable": false, "targets": 5, title: '数量'},
-                        {"orderable": false, "targets": 6, title: '产品描述'},
-                        {"orderable": true, "targets": 7, title: '产品单价'},
-                        {"orderable": true, "targets": 8, title: '支付金额'},
+                        {"orderable": false, "targets": 5, title: '产品描述'},
+                        {"orderable": false, "targets": 6, title: '产品单价'},
+                        {"orderable": false, "targets": 7, title: '数量'},
+                        {"orderable": false, "targets": 8, title: '支付金额'},
                         {"orderable": false, "targets": 9, title: '状态'}
                     ],
                     "aLengthMenu": [[20, 100, 1000, -1], ["20", "100", "1000", "全部"]],//二组数组，第一组数量，第二组说明文字;
@@ -99,7 +100,7 @@
                     scrollY: '60vh',
                     "ajax": url,
                     "processing": true,
-                    "footerCallback": function (tfoot, data, start, end, display) {
+                    /*"footerCallback": function (tfoot, data, start, end, display) {
                         var total1 = 0.0;
                         var total2 = 0.0;
                         $.each(data, function (index, value) {
@@ -112,7 +113,7 @@
                         $(tfoot).find('th').eq(0).html('在线支付 成功金额合计： ' + accounting.formatMoney(total1, '￥') +
                             '&nbsp;&nbsp;&nbsp;线下转账 成功金额合计： ' + accounting.formatMoney(total2, '￥') +
                             '&nbsp;&nbsp;&nbsp;&nbsp;总计： ' + accounting.formatMoney(total1 + total2, '￥'));
-                    },
+                    },*/
                     select: {style: 'single'}
                 });
 
@@ -171,7 +172,7 @@
 
                             <div class="col-xs-12">
                                 <div class="table-header">
-                                    姓名：<span id="realName"></span>，身份证号：<span id="idCard"></span>， 会员号：<span id="memberNo"></span>，订单明细
+                                    姓名：<span id="realName"></span>，身份证号：<span id="idCard"></span>， 会员号：<span id="memberNo"></span>，订单 <span id="orderNo"></span> 明细
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <!-- div.table-responsive -->
@@ -179,13 +180,13 @@
                                 <!-- div.dataTables_borderWrap -->
                                 <div>
                                     <table id="dynamic-table" class="table table-striped table-bordered table-hover">
-                                        <tfoot>
+                                        <%--<tfoot>
                                         <tr>
                                             <th colspan="7" style="text-align:right">
                                                 <div id="footTotal">&nbsp;</div>
                                             </th>
                                         </tr>
-                                        </tfoot>
+                                        </tfoot>--%>
                                     </table>
                                 </div>
                             </div>

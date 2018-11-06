@@ -1,5 +1,13 @@
 update member2 set 银行卡姓名=replace(银行卡姓名,'\\','');
+update member2 set 开户地址=replace(开户地址,'\\','');
+update member2 set 真实姓名=replace(真实姓名,'\\','');
+update member2 set 地址=replace(地址,'\\','');
+update member2 set 银行卡号=replace(银行卡号,'\\','');
+update member2 set 开户行=replace(开户行,'\\','');
+
 update member2 set `开户行`='中国农业银行[北京市，北京市市辖区，山西省吕梁市石楼支行]'  where 会员名称='19152';
+
+update member set info2=replace(info2,char(2),'') where member_id=1318844;
 
 insert into member (member_no,user_name,real_name,phone,id_card,parent_no,cur_level,child_depth,direct_count,child_total,info)
 

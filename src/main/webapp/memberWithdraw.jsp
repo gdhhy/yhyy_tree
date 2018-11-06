@@ -71,7 +71,7 @@
                         {"data": "联系电话", "sClass": "center"},
                         {"data": "金额", "sClass": "center"},
                         {"data": "处理时间", "sClass": "center"},
-                        {"data": "货币类型", "sClass": "center"},
+                        /*{"data": "货币类型", "sClass": "center"},*/
                         {"data": "备注", "sClass": "center"},
                         {"data": "第三方交易号", "sClass": "center"},
                         {"data": "状态", "sClass": "center"},
@@ -86,20 +86,20 @@
                                 return meta.row + 1 + meta.settings._iDisplayStart;
                             }
                         },
-                        {"orderable": true, 'targets': 1, title: '申请时间', width: 160},
+                        {"orderable": true, 'targets': 1, title: '申请时间', width: 120},
                         {"orderable": false, "targets": 2, title: '银行名称'},
                         {"orderable": false, "targets": 3, title: '银行卡号'},
                         {"orderable": false, "targets": 4, title: '用户名'},
                         {"orderable": false, "targets": 5, title: '联系电话'},
                         {"orderable": false, "targets": 6, title: '金额'},
-                        {"orderable": false, "targets": 7, title: '处理时间'},
-                        {"orderable": false, "targets": 8, title: '货币类型'},
-                        {"orderable": false, "targets": 9, title: '备注'},
-                        {"orderable": false, 'targets': 10, title: '第三方交易号'},
-                        {"orderable": false, 'targets': 11, title: '状态'},
-                        {"orderable": false, 'targets': 12, title: '到账状态'},
-                        {"orderable": false, 'targets': 13, title: '账户类型'},
-                        {"orderable": false, 'targets': 14, title: '单号'}
+                        {"orderable": false, "targets": 7, title: '处理时间', width: 140},
+                        /*{"orderable": false, "targets": 8, title: '货币类型'},*/
+                        {"orderable": false, "targets": 8, title: '备注'},
+                        {"orderable": false, 'targets': 9, title: '第三方交易号'},
+                        {"orderable": false, 'targets': 10, title: '状态'},
+                        {"orderable": false, 'targets': 11, title: '到账状态'},
+                        {"orderable": false, 'targets': 12, title: '账户类型'},
+                        {"orderable": false, 'targets': 13, title: '单号'}
                     ],
                     "aLengthMenu": [[20, 100, 1000, -1], ["20", "100", "1000", "全部"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序

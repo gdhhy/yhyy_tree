@@ -74,7 +74,7 @@
                         {"data": "订单的货币价格总计", "sClass": "center"},
                         {"data": "支付金额", "sClass": "center"},
                         {"data": "订单状态", "sClass": "center"},
-                        {"data": "订单编号", "sClass": "center"}
+                        {"data": "购买的所有产品的总数", "sClass": "center"}
                     ],
 
                     'columnDefs': [
@@ -83,9 +83,9 @@
                                 return meta.row + 1 + meta.settings._iDisplayStart;
                             }
                         },
-                        {"orderable": true, 'targets': 1, title: '买家会员名'},
+                        {"orderable": false, 'targets': 1, title: '买家会员名'},
                         {"orderable": true, 'targets': 2, title: '订单时间', width: 160},
-                        {"orderable": true, 'targets': 3, title: '付款时间', width: 160},
+                        {"orderable": false, 'targets': 3, title: '付款时间', width: 160},
                         {"orderable": false, "targets": 4, title: '供货商用户名'},
                         {"orderable": false, "targets": 5, title: '支付方式名称'},
                         {"orderable": false, "targets": 6, title: '描述'},
@@ -94,11 +94,11 @@
                         {"orderable": false, "targets": 9, title: '支付金额'},
                         {"orderable": false, 'targets': 10, title: '订单状态'},
                         {
-                            "orderable": false, 'targets': 11, title: '产品明细',
+                            "orderable": false, 'targets': 11, title: '商品数量',
                             render: function (data, type, row, meta) {
-                                return row["订单的货币价格总计"] > 0.0001 ? '<a class="hasDetail" href="#" data-Url="/memberProduct.jspx?memberNo={0}&realName={1}&orderNo={2}">'.
-                                format(memberNo, encodeURI(encodeURI($('#realName').text())), data)  : '';
-
+                                return data > 0 ? '<a class="hasDetail" href="#" data-Url="/memberProduct.jspx?memberNo={0}&realName={1}&orderNo={2}">{3}</a>'
+                                    .format(memberNo, encodeURI(encodeURI($('#realName').text())), row["订单编号"],data) : data;
+                                //return  '<a class="hasDetail" href="#" data-Url="/memberProduct.jspx?memberNo={0}&orderNo={2}">'.format(memberNo , data) ;
                             }
                         }
                     ],
@@ -121,7 +121,11 @@
                     },
                     select: {style: 'single'}
                 });
-
+            myTable.on('draw', function () {
+                $('#dynamic-table tr').find('.hasDetail').click(function () {
+                    window.open($(this).attr("data-Url"), "_blank");
+                });
+            });
             //$.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
             new $.fn.dataTable.Buttons(myTable, {
                 buttons: [
@@ -188,7 +192,7 @@
                                     <table id="dynamic-table" class="table table-striped table-bordered table-hover">
                                         <tfoot>
                                         <tr>
-                                            <th colspan="11" style="text-align:right">
+                                            <th colspan="12" style="text-align:right">
                                                 <div id="footTotal">&nbsp;</div>
                                             </th>
                                         </tr>
