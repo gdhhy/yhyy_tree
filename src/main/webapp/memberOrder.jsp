@@ -67,7 +67,7 @@
                         {"data": "买家会员名", "sClass": "center"},
                         {"data": "订单时间", "sClass": "center"},
                         {"data": "付款时间", "sClass": "center"},
-                        {"data": "供货商用户名", "sClass": "center"},
+                        {"data": "供货商用户ID", "sClass": "center"},
                         {"data": "支付方式名称", "sClass": "center"},
                         {"data": "描述", "sClass": "center"},
                         {"data": "支付积分", "sClass": "center"},
@@ -86,7 +86,11 @@
                         {"orderable": false, 'targets': 1, title: '买家会员名'},
                         {"orderable": true, 'targets': 2, title: '订单时间', width: 160},
                         {"orderable": false, 'targets': 3, title: '付款时间', width: 160},
-                        {"orderable": false, "targets": 4, title: '供货商用户名'},
+                        {
+                            "orderable": false, "targets": 4, title: '供货商用户ID', render: function (data, type, row, meta) {
+                                return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberNo={0}">{1}</a>'.format(data, data);
+                            }
+                        },
                         {"orderable": false, "targets": 5, title: '支付方式名称'},
                         {"orderable": false, "targets": 6, title: '描述'},
                         {"orderable": false, "targets": 7, title: '支付积分'},
@@ -97,7 +101,7 @@
                             "orderable": false, 'targets': 11, title: '商品数量',
                             render: function (data, type, row, meta) {
                                 return data > 0 ? '<a class="hasDetail" href="#" data-Url="/memberProduct.jspx?memberNo={0}&realName={1}&orderNo={2}">{3}</a>'
-                                    .format(memberNo, encodeURI(encodeURI($('#realName').text())), row["订单编号"],data) : data;
+                                    .format(memberNo, encodeURI(encodeURI($('#realName').text())), row["订单编号"], data) : data;
                                 //return  '<a class="hasDetail" href="#" data-Url="/memberProduct.jspx?memberNo={0}&orderNo={2}">'.format(memberNo , data) ;
                             }
                         }

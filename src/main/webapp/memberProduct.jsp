@@ -84,7 +84,9 @@
                         },
                         {"orderable": true, 'targets': 1, title: '订单时间', width: 160},
                         {"orderable": false, "targets": 2, title: '订购会员ID'},
-                        {"orderable": false, "targets": 3, title: '供应商编号'},
+                        {"orderable": false, "targets": 3, title: '供应商编号', render: function (data, type, row, meta) {
+                                return '<a href="#" class="hasDetail" data-Url="/memberInfo.jspx?memberNo={0}">{1}</a>'.format(data, data);
+                            }},
                         {"orderable": false, "targets": 4, title: '产品名称'},
                         {"orderable": false, "targets": 5, title: '产品描述'},
                         {"orderable": false, "targets": 6, title: '产品单价'},
@@ -116,6 +118,11 @@
                     },*/
                     select: {style: 'single'}
                 });
+            myTable.on('draw', function () {
+                $('#dynamic-table tr').find('.hasDetail').click(function () {
+                    window.open($(this).attr("data-Url"), "_blank");
+                });
+            });
 
             //$.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
             new $.fn.dataTable.Buttons(myTable, {
