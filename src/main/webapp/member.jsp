@@ -64,9 +64,9 @@
                         {"data": "childTotal", "sClass": "center"},
                         {"data": "childDepth", "sClass": "center"},
                         {"data": "directCount", "sClass": "center"},
-                        {"data": "memberNo", "sClass": "center"},
+                        {"data": "memberNo", "sClass": "center"}/*,
                         {"data": "withdrawMoney", "sClass": "center"},
-                        {"data": "consumeMoney", "sClass": "center"}
+                        {"data": "consumeMoney", "sClass": "center"}*/
                     ],
 
                     'columnDefs': [
@@ -103,7 +103,7 @@
                                     '</a>' +
                                     '</div>';
                             }
-                        },
+                        }/*,
                         {
                             "orderable": false, 'targets': 12, title: '提现金额',
                             render: function (data, type, row, meta) {
@@ -115,7 +115,7 @@
                             render: function (data, type, row, meta) {
                                 return data > 0.0001 ? '<a href="#" class="hasDetail" data-Url="/memberOrder.jspx?memberNo={0}">{1}</a>'.format(row["memberNo"], data) : '';
                             }
-                        }
+                        }*/
                     ],
                     "aLengthMenu": [[20, 100, 1000], ["20", "100", "1000"]],//二组数组，第一组数量，第二组说明文字;
                     "aaSorting": [],//"aaSorting": [[ 4, "desc" ]],//设置第5个元素为默认排序

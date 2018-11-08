@@ -147,48 +147,20 @@
             function showMemberInfo() {
                 if (infoString !== '') {
                     var memberInfo = JSON.parse(infoString);
-                    var html = "";
-                    /* html += row2.format("用户名：", result.data[0].realName, "上级ID：", result.data[0].parentNo);
-                      html += row2.format("用户ID ：", result.data[0].memberNo, "手机号码：", result.data[0].phone);
 
-                      html += row2.format("当前层级：", result.data[0].curLevel, "下级深度：", result.data[0].childDepth);
-                      html += row2.format("全部下级数：", result.data[0].childTotal, " 直接下级数：", result.data[0].directCount);*/
                     var baseInfo = {
                         "姓名": '<c:out value="${member.realName}"/>', "身份证号码": '<c:out value="${member.idCard}"/>',
                         "用户名": '<c:out value="${member.userName}"/>', "电话号码": '<c:out value="${member.phone}"/>',
                         "当前层级": '<c:out value="${member.curLevel}"/>', "下级深度": '<c:out value="${member.childDepth}"/>',
                         "全部下级数": '<c:out value="${member.childTotal}"/>', "直接下级数": '<c:out value="${member.directCount}"/>'
                     };
-                    html = showDivObject("层级信息", baseInfo);
+                    var html = showDivObject("层级信息", baseInfo);
                     $('#baseInfo').html(html);
 
                     html = showDivObject("注册信息", memberInfo["基本信息"]);
                     html += showDivObject("资金", memberInfo["资金"]);
                     $('#aaa').html(html);
-                    /*
-                    if (memberInfo) {
-                        var html = "";
-                        $.each(memberInfo, function (key, val) {
-                            var objType = typeof (val);
-                            if (val instanceof Array) html += showTable(key, val);
-                            else if (objType === "object") html += showDivObject(key, val);
-                        });
-                        $('#aaa').html(html);
-                    }*/
 
-                    /*对含ID的，增加连接*/
-                    /*   $('#baseInfo').find(".profile-info-row").each(function () {
-                           if ($(this).find('.profile-info-name:eq(0)').text().indexOf("ID") > 0) {
-                               var valueElement = $(this).find('.profile-info-value:eq(0)');
-
-                               valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
-                           }
-                           if ($(this).find('.profile-info-name:eq(1)').text().indexOf("ID") > 0) {
-                               valueElement = $(this).find('.profile-info-value:eq(1)');
-
-                               valueElement.html("<a href='memberInfo.jspx?memberId={0}'>{1}</a>".format(valueElement.text(), valueElement.text()));
-                           }
-                       });*/
                     $(".profile-info-name:contains('充值金额')").css("width", "200px");
                     $(".profile-info-name:contains('姓名')").next().addClass("bigger-150");
                     $(".profile-info-name:contains('身份证号码')").next().addClass("bigger-130");
